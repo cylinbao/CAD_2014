@@ -1,0 +1,108 @@
+System
+begin
+	TAM_width	60
+	Power		14
+        Resource BIST_1 BIST_2
+end
+
+Core	core_1
+begin
+	TAM_width	12	
+        External test_1 length 186549 power 2 partition 3
+        BIST     test_2 length 256    power 3 resource BIST_1
+        BIST     test_3 length 256    power 3 resource BIST_1        
+end
+
+Core	core_2
+begin
+	TAM_width	12	
+        External test_4 length 178 power 2
+end
+
+Core	core_3
+begin
+	TAM_width	12	
+        External test_5 length 73534 power 2 partition 2
+end
+
+Core	core_4
+begin
+	TAM_width	12	
+        External test_6  length 341858 power 2 partition 4
+        BIST     test_7  length 532    power 3 resource BIST_2
+        BIST     test_8  length 532    power 3 resource BIST_2   
+        BIST     test_9  length 772    power 3 resource BIST_2   
+        BIST     test_10 length 20960  power 3 resource BIST_2           
+end
+
+Core	core_5
+begin
+	TAM_width	12	
+        External test_11  length 15604 power 2   
+end
+
+Core	core_6
+begin
+	TAM_width	12	
+        External test_12  length 114060 power 2  partition 2      
+end
+
+Core	core_7
+begin
+	TAM_width	12	
+        External test_13  length 123434  power 2 partition 2      
+end
+
+Core	core_8
+begin
+	TAM_width	12	
+        External test_14  length 123434  power 2 partition 2
+        BIST     test_15  length 1155    power 3 resource BIST_1
+        BIST     test_16  length 3964    power 3 resource BIST_1
+end
+
+Core	core_9
+begin
+	TAM_width	12	
+        External test_17  length 97215  power 2 partition 2 
+        BIST     test_18  length 256    power 3 resource BIST_1
+end
+
+Core	core_14
+begin
+	TAM_width	12	
+        External test_19  length 64770  power 2 
+end
+
+Core	core_10
+begin
+	TAM_width	12	
+        External test_20  length 215588  power 2 partition 3 
+        BIST     test_21  length 256     power 3 resource BIST_2
+        BIST     test_22  length 256     power 3 resource BIST_2
+end
+
+Core	core_11
+begin
+	TAM_width	12	
+        External test_23  length 215588  power 2 partition 3 
+        BIST     test_24  length 9217    power 3 resource BIST_1
+        BIST     test_25  length 8065    power 3 resource BIST_1
+        BIST     test_26  length 388     power 3 resource BIST_1
+end
+
+Core	core_12
+begin
+	TAM_width	12	
+        External test_27  length 187067   power 2 partition 3 
+        BIST     test_28  length 3172     power 3 resource BIST_2
+end
+
+Core	core_13
+begin
+	TAM_width	12	
+        External test_29  length 96533  power 2 partition 2 
+        BIST     test_30  length 771    power 3 resource BIST_2
+        BIST     test_31  length 2250   power 3 resource BIST_2
+        BIST     test_32  length 55520  power 3 resource BIST_2
+end
