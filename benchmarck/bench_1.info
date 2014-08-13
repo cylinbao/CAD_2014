@@ -1,0 +1,63 @@
+System
+begin
+	TAM_width	8
+	Power		10
+	Resource BIST_1 BIST_2 BIST_3 BIST_4 
+end
+
+Core	core_1
+begin
+	TAM_width	4	
+        External test_1 length 300 power 2
+        BIST     test_2 length 200 power 3 resource BIST_1
+end
+
+Core	core_2
+begin
+	TAM_width	2	
+        External test_3 length 200 power 2
+        BIST     test_4 length 100 power 1 resource BIST_2
+end
+
+Core	core_3
+begin
+	TAM_width	3	
+        External test_5 length 500 power 3 partition 2
+        BIST     test_6 length 250 power 4 resource BIST_3
+end
+
+Core	core_4
+begin
+	TAM_width	4	
+        External test_7 length 100 power 2
+        BIST     test_8 length 100 power 2 resource BIST_1
+end
+
+Core	core_5
+begin
+	TAM_width	6	
+        External test_9 length 200 power 4
+        BIST     test_10 length 100 power 2 resource BIST_1
+end
+
+Core	core_6
+begin
+	TAM_width	3	
+        External test_11 length 600 power 4 partition 3
+        BIST     test_12 length 200 power 2 resource BIST_1
+end
+
+Core	core_7
+begin
+	TAM_width	4	
+        External test_13 length 200 power 4
+        BIST     test_14 length 700 power 2 resource BIST_4
+end
+
+Core	core_8
+begin
+	TAM_width	3	
+        External test_15 length 250 power 4
+        BIST     test_16 length 700 power 1 resource BIST_1
+end
+
