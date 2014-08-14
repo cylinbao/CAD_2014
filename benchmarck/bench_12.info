@@ -13,10 +13,10 @@ begin
     Precedence      test_4_3_1  > test_81_3_1
 	Precedence		test_94_3_1 > test_56_3_2 > test_7_1_9
 	Precedence		test_99_3_1 > test_33_3_5
-	Precedence		test_20_3_2 > test_97_3_2 > test_83_3_2 
+	Precedence		test_20_3_2 > test_97_3_2 > test_83_3_2
 	Precedence		test_71_3_2 > test_38_3_1 > test_79_3_2
     Precedence      test_40_1_1 > test_40_3_4 > test_40_3_5
-	Resource		bsrc_1 bsrc_2 
+	Resource		bsrc_1 bsrc_2  
 end
 
 

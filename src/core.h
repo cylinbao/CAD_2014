@@ -69,27 +69,26 @@ class Core{
 
 class Test{
 	public: 
-		Test(){core = NULL; name = ""; power = 0; length = 0; pre = NULL;};
+		Test(){core = NULL; name = ""; power = 0; length = 0;done = false;};
 
 		void setCore(Core* core){this->core = core;};
 		void setName(string name){this->name = name;};
 		void setPower(int power){this->power = power;};
 		void setLength(int length){this->length = length;};
-		void setPre(Test* pre){this->pre = pre;};
+		void addPre(Test* pre){this->pre.push_back(pre);};
 
 		Core* getCore(){return core;};
 		string getName(){return name;};
 		int getPower(){return power;};
 		int getLength(){return length;};
-		Test* getPre(){return pre;};
+		vector<Test*>* getPre(){return &pre;};
 	private: 
 		Core* core;
 		string name;
 		int power;
 		int length;
-		Test *pre;
-
-	
+		bool done;
+		vector<Test*> pre;
 };
 
 class External: public Test{

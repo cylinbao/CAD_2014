@@ -1,5 +1,4 @@
 #include "parser.h"
-//#include "core.h"
 #include <iostream>
 #include <iostream>
 #include <fstream>
@@ -14,6 +13,7 @@ void readInputFile(char* fileName)
 	ifstream ifs(fileName);
 	string line, catagory, type, name;
 	int data, num_test;
+	vector<vector<string> > pre;
 	stringstream ss;
 	if(ifs == NULL){
 		perror("Couldn't Open the Input File!");
@@ -45,8 +45,17 @@ void readInputFile(char* fileName)
 					continue;
 				}
 				else if(type == "Precedence"){
-					while(!ss.eof())
+					vector<string> new_pre;
+					while(!ss.eof()){
 						ss >> name;
+						if(name != ">"){
+							if(new_pre.size() == 0)
+								new_pre.push_back(name);
+							else if(name != new_pre.back())
+								new_pre.push_back(name);
+						}
+					}
+					pre.push_back(new_pre);
 					ss.clear();
 					continue;
 				}
@@ -157,5 +166,7 @@ void readInputFile(char* fileName)
 			cout<<sys.core[sys.core.size() - 1]->getName()<<": "<<sys.core[sys.core.size() - 1]->getNumTest()<<endl;
 		}
 	}
+	cout<<"Num of Resource: "<<sys.res_list.size()<<endl;
+	cout<<"Num of Pre: "<<pre.size()<<endl;
 	cout<<"Num of Core: "<<sys.core.size()<<endl;
 }
