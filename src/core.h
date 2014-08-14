@@ -21,6 +21,7 @@ class System{
 		int getSysTM(){return tot_TAM_width;};
 
 		vector<Core*> core;
+		map<string, Test*> tot_list;
 		map<string, External*> ext_list;
 		map<string, BIST*> bist_list;
 		map<string, Resource*> res_list;

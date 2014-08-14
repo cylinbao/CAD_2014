@@ -3,3 +3,4 @@
 #include "core.h"
 
 void readInputFile(char *);
+void setPrecedence();

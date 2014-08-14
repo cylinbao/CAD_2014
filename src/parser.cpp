@@ -6,14 +6,14 @@
 
 using namespace std;
 
-System sys;
+extern System sys;
+vector<vector<string> > pre;
 
 void readInputFile(char* fileName)
 {
 	ifstream ifs(fileName);
 	string line, catagory, type, name;
 	int data, num_test;
-	vector<vector<string> > pre;
 	stringstream ss;
 	if(ifs == NULL){
 		perror("Couldn't Open the Input File!");
@@ -103,6 +103,7 @@ void readInputFile(char* fileName)
 					ss >> name;
 
 					External* new_ext = new External;
+					sys.tot_list[name] = new_ext;
 					sys.ext_list[name] = new_ext;
 					new_core->ext_list[name] = new_ext;
 					new_ext->setCore(new_core);
@@ -130,6 +131,7 @@ void readInputFile(char* fileName)
 					ss >> name;
 
 					BIST* new_bist = new BIST;
+					sys.tot_list[name] = new_bist;
 					sys.bist_list[name] = new_bist;
 					new_core->bist_list[name] = new_bist;
 					new_bist->setCore(new_core);
@@ -169,4 +171,13 @@ void readInputFile(char* fileName)
 	cout<<"Num of Resource: "<<sys.res_list.size()<<endl;
 	cout<<"Num of Pre: "<<pre.size()<<endl;
 	cout<<"Num of Core: "<<sys.core.size()<<endl;
+}
+
+void setPrecedence()
+{	
+	int i , j;
+	for(i = 0; i < (int)pre.size(); i++){
+		for(j = 0; j < (int)pre[i].size() - 1; j++)
+			sys.tot_list[pre[i][j + 1]]->addPre(sys.tot_list[pre[i][j]]);
+	}
 }
