@@ -1,13 +1,11 @@
 #include "parser.h"
-//#include "core.h"
-#include <iostream>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 
 using namespace std;
 
-System sys;
+extern System sys;
 
 void readInputFile(char* fileName)
 {

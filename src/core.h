@@ -1,3 +1,6 @@
+#ifndef _CORE_H_
+#define _CORE_H_
+
 #include <map>
 #include <string>
 #include <vector>
@@ -114,3 +117,5 @@ class BIST: public Test{
 	private:
 		string res;
 };
+
+#endif
