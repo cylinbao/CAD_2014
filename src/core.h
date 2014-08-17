@@ -18,10 +18,10 @@ class System{
 		System(){tot_power = 0;tot_TAM_width = 0;};
 
 		void setSysPower(int power){tot_power = power;};
-		void setSysTM(int TAM_width){tot_TAM_width = TAM_width;};
+		void setSysTW(int TAM_width){tot_TAM_width = TAM_width;};
 
 		int getSysPower(){return tot_power;};
-		int getSysTM(){return tot_TAM_width;};
+		int getSysTW(){return tot_TAM_width;};
 
 		vector<Core*> core;
 		map<string, Test*> tot_list;
@@ -50,17 +50,22 @@ class Resource{
 
 class Core{
 	public:
-		Core(){sys = NULL; name = ""; TAM_width = 0; num_test = 0;};
+		Core(){sys = NULL; name = ""; TAM_width = 0; num_test = 0; ext_length = 0; TAM_begin = 0; TAM_end = 0;};
 
 		void setSystem(System* sys){this->sys = sys;};
 		void setName(string name){this->name = name;};
 		void setCoreTW(int TAM_width){this->TAM_width = TAM_width;};
 		void setNumTest(int num_test){this->num_test = num_test;};
+		void setExtLength(int ext_length){this->ext_length = ext_length;};
+		void setTAMRange(int begin, int end){this->TAM_begin = begin; this->TAM_end = end;};
 
 		System* getSystem(){return sys;};
 		string getName(){return name;};
 		int getCoreTW(){return TAM_width;};
 		int getNumTest(){return num_test;};
+		int getExtLength(){return ext_length;};
+		int getTAMBegin(){return TAM_begin;};
+		int getTAMEnd(){return TAM_end;};
 
 		map<string, External*> ext_list;
 		map<string, BIST*> bist_list;
@@ -69,6 +74,9 @@ class Core{
 		string name;
 		int TAM_width;
 		int num_test;
+		int ext_length;
+		int TAM_begin;
+		int TAM_end;
 };
 
 class Test{
@@ -116,6 +124,16 @@ class BIST: public Test{
 		string getRes(){return res;};
 	private:
 		string res;
+};
+
+class Interval{
+	public:
+		Interval();
+		Interval(int begin, int end, int weight){this->begin = begin; this->end = end; this->weight = weight; width = end - begin + 1;};
+		int begin;
+		int end;
+		int width;
+		int weight;
 };
 
 #endif

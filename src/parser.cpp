@@ -2,6 +2,8 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <queue>
+#include <stack>
 
 using namespace std;
 
@@ -12,7 +14,7 @@ void readInputFile(char* fileName)
 {
 	ifstream ifs(fileName);
 	string line, catagory, type, name;
-	int data, num_test;
+	int data, num_test, ext_length;
 	stringstream ss;
 	if(ifs == NULL){
 		perror("Couldn't Open the Input File!");
@@ -33,7 +35,7 @@ void readInputFile(char* fileName)
 				ss >> type;
 				if(type == "TAM_width"){
 					ss >> data;
-					sys.setSysTM(data);
+					sys.setSysTW(data);
 					ss.clear();
 					continue;
 				}
@@ -80,6 +82,7 @@ void readInputFile(char* fileName)
 		}
 		else if(catagory == "Core"){
 			num_test = 0;
+			ext_length = 0;
 			ss >> name;
 
 			Core* new_core = new Core;
@@ -112,6 +115,7 @@ void readInputFile(char* fileName)
 						if(type == "length"){
 							ss >> data;
 							new_ext->setLength(data);
+							ext_length += data;
 						}
 						else if(type == "power"){
 							ss >> data;
@@ -160,16 +164,17 @@ void readInputFile(char* fileName)
 				}
 				else if(type == "end"){
 					new_core->setNumTest(num_test);
+					new_core->setExtLength(ext_length);
 					ss.clear();
 					break;
 				}
 			}
-			cout<<sys.core[sys.core.size() - 1]->getName()<<": "<<sys.core[sys.core.size() - 1]->getNumTest()<<endl;
+//			cout<<sys.core[sys.core.size() - 1]->getName()<<":"<<endl<<"TAM width: "<<sys.core[sys.core.size() - 1]->getCoreTW()<<endl<<"Num of Test: "<<sys.core[sys.core.size() - 1]->getNumTest()<<endl<<"Total length of External: "<<sys.core[sys.core.size() - 1]->getExtLength()<<endl;
 		}
 	}
-	cout<<"Num of Resource: "<<sys.res_list.size()<<endl;
-	cout<<"Num of Pre: "<<pre.size()<<endl;
-	cout<<"Num of Core: "<<sys.core.size()<<endl;
+//	cout<<"Num of Resource: "<<sys.res_list.size()<<endl;
+//	cout<<"Num of Pre: "<<pre.size()<<endl;
+//	cout<<"Num of Core: "<<sys.core.size()<<endl;
 }
 
 void setPrecedence()
@@ -179,4 +184,74 @@ void setPrecedence()
 		for(j = 0; j < (int)pre[i].size() - 1; j++)
 			sys.tot_list[pre[i][j + 1]]->addPre(sys.tot_list[pre[i][j]]);
 	}
+}
+
+struct cmp_core
+{
+	bool operator()(Core* l, Core* r)
+	{
+		return l->getCoreTW() < r->getCoreTW();
+	}
+};
+
+struct cmp_interval
+{
+	bool operator()(Interval* l, Interval* r)
+	{
+		return l->weight > r->weight;
+	}
+};
+
+void TAMwidthAssign()
+{
+	int i;
+	priority_queue<Core*, vector<Core*>, cmp_core> core_pq;
+	priority_queue<Interval*, vector<Interval*>, cmp_interval> interval_pq;
+	stack<Interval*> improper_interval;
+	Interval* new_interval = new Interval(0, sys.getSysTW() - 1, 0);
+	interval_pq.push(new_interval);
+	for(i = 0; i < (int)sys.core.size(); i++){
+		if(sys.core[i]->getCoreTW() != 0)
+			core_pq.push(sys.core[i]);
+	}
+	while(!core_pq.empty()){
+		while(true){
+			if(core_pq.top()->getCoreTW() < interval_pq.top()->width){
+			cout<<interval_pq.top()->begin<<", "<<interval_pq.top()->end<<endl;
+				Interval* proper_interval = new Interval(interval_pq.top()->begin, interval_pq.top()->end, interval_pq.top()->weight);
+				interval_pq.pop();
+
+				Interval* interval_1 = new Interval(proper_interval->begin, proper_interval->begin + core_pq.top()->getCoreTW() - 1, proper_interval->weight + core_pq.top()->getExtLength());
+				Interval* interval_2 = new Interval(proper_interval->begin + core_pq.top()->getCoreTW(), proper_interval->end, proper_interval->weight);
+
+				interval_pq.push(interval_1);
+				interval_pq.push(interval_2);
+				core_pq.top()->setTAMRange(interval_1->begin, interval_1->end);
+
+				while(!improper_interval.empty()){
+					interval_pq.push(improper_interval.top());
+					improper_interval.pop();
+				}
+				break;
+			}else if(core_pq.top()->getCoreTW() == interval_pq.top()->width){
+			cout<<interval_pq.top()->begin<<", "<<interval_pq.top()->end<<endl;
+				interval_pq.top()->weight += core_pq.top()->getExtLength();
+				core_pq.top()->setTAMRange(interval_pq.top()->begin, interval_pq.top()->end);
+				while(!improper_interval.empty()){
+					interval_pq.push(improper_interval.top());
+					improper_interval.pop();
+				}
+				break;
+
+			}else{
+				improper_interval.push(interval_pq.top());
+				interval_pq.pop();
+			}
+
+		}
+		cout<<core_pq.top()->getName()<<"("<<core_pq.top()->getCoreTW()<<"): ";
+		cout<<core_pq.top()->getTAMBegin()<<", "<<core_pq.top()->getTAMEnd()<<endl;
+		core_pq.pop();
+	}
+	
 }

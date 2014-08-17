@@ -15,6 +15,7 @@ int main(int argc, char** argv)
 {
 	readInputFile(argv[1]);
 	setPrecedence();
+	TAMwidthAssign();
 	possibleExternal();
 	possibleBIST();
 	return 0;

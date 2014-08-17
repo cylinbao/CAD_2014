@@ -4,3 +4,4 @@
 
 void readInputFile(char *);
 void setPrecedence();
+void TAMwidthAssign();
