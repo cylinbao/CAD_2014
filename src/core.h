@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <queue>
 
 using namespace std;
 
@@ -12,6 +13,29 @@ class Test;
 class External;
 class BIST;
 class Resource;
+class TAM_Interval;
+class cmp_TAM;
+
+class TAM_Interval{
+	public:
+		TAM_Interval(int tot_TAM_width){ begin=0; end=tot_TAM_width-1; time=0; 
+																		 power=0; width=end; occupyExternal=NULL;}
+		TAM_Interval(int front, int back, int timeStat, int energy,
+								 External *p_External);
+		int begin;
+		int end;
+		int time;
+		int power;
+		int width;
+		External *occupyExternal;
+};
+
+class cmp_TAM {
+	public:
+		bool operator()(TAM_Interval* lhs, TAM_Interval* rhs) {
+			return lhs->time > rhs->time;
+		}
+};
 
 class System{
 	public:
@@ -20,14 +44,23 @@ class System{
 		void setSysPower(int power){tot_power = power;};
 		void setSysTW(int TAM_width){tot_TAM_width = TAM_width;};
 
+		void initTAM();
+		void printTAM();
+
 		int getSysPower(){return tot_power;};
 		int getSysTW(){return tot_TAM_width;};
+
+		void fillTest();
+		vector<External> possibleExternal(TAM_Interval *p_TAM_Interval);
+		vector<BIST> possibleBIST();
 
 		vector<Core*> core;
 		map<string, Test*> tot_list;
 		map<string, External*> ext_list;
 		map<string, BIST*> bist_list;
 		map<string, Resource*> res_list;
+		priority_queue<TAM_Interval*, vector<TAM_Interval*>, cmp_TAM> TAM;
+
 	private:
 		int tot_power;
 		int tot_TAM_width;
@@ -81,7 +114,8 @@ class Core{
 
 class Test{
 	public: 
-		Test(){core = NULL; name = ""; power = 0; length = 0;done = false;};
+		Test(){core = NULL; name = ""; power = 0; length = 0;done = false;
+					 startTime = 0; endTime = 0;};
 
 		void setCore(Core* core){this->core = core;};
 		void setName(string name){this->name = name;};
@@ -99,6 +133,7 @@ class Test{
 		string name;
 		int power;
 		int length;
+		int startTime, endTime;
 		bool done;
 		vector<Test*> pre;
 };

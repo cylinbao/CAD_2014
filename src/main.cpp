@@ -2,13 +2,12 @@
 #include "stdlib.h"
 #include "core.h"
 #include "parser.h"
-#include "possibleTests.h"
 
 using namespace std;
 
 extern void readInputFile(char*);
-extern void possibleExternal();
-extern void possibleBIST();
+//extern void possibleExternal();
+//extern void possibleBIST();
 System sys;
 
 int main(int argc, char** argv)
@@ -16,7 +15,8 @@ int main(int argc, char** argv)
 	readInputFile(argv[1]);
 	setPrecedence();
 	TAMwidthAssign();
-	possibleExternal();
-	possibleBIST();
+	sys.initTAM();
+	sys.printTAM();
+	//sys.fillTest();
 	return 0;
 }
