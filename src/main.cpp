@@ -6,8 +6,6 @@
 using namespace std;
 
 extern void readInputFile(char*);
-//extern void possibleExternal();
-//extern void possibleBIST();
 System sys;
 
 int main(int argc, char** argv)
@@ -15,8 +13,8 @@ int main(int argc, char** argv)
 	readInputFile(argv[1]);
 	setPrecedence();
 	TAMwidthAssign();
-	sys.initTAM();
-	sys.printTAM();
+	sys.TAM.initTAM(sys.getSysTW());
+	sys.TAM.printTAM();
 	//sys.fillTest();
 	return 0;
 }

@@ -1,36 +1,54 @@
 #include "core.h"
 #include "stdio.h"
 
-void System::initTAM() {
-	while(!TAM.empty())
-		TAM.pop();
-	TAM_Interval *p_TAM_Interval = new TAM_Interval(tot_TAM_width);
-	TAM.push(p_TAM_Interval);
+TAMInterval::TAMInterval(int front, int back, int timeStat, int energy,
+													 External *p_External){
+	TAMBegin = front;
+	TAMEnd = back;
+	time = timeStat;
+	power = energy;
+	width = TAMBegin - TAMEnd;
+	occupyExternal = p_External;
 }
 
-void System::printTAM() {
-	TAM_Interval *p_TAM;
+void TAMContainer::initTAM(int tot_TAM_width) {
+	while(!pqTAM.empty())
+		pqTAM.pop();
+	TAMInterval *pTAMInterval = new TAMInterval(tot_TAM_width);
+	pqTAM.push(pTAMInterval);
+}
 
-	while(!TAM.empty()) {
-		p_TAM = TAM.top();	
-		TAM.pop();
+void TAMContainer::printTAM() {
+	TAMInterval *pTAM;
+	priority_queue<TAMInterval*, vector<TAMInterval*>, cmp_TAM> tempTAM;
 
-		printf("Time for this state: %d\n", p_TAM->time);
-		printf("Range: %d ~ %d\n", p_TAM->begin, p_TAM->end);
-		printf("Power used by this test: %d\n", p_TAM->power);
-		if(p_TAM->occupyExternal != NULL)
-			printf("External test name: %s\n", (p_TAM->occupyExternal->getName()).c_str());
+	tempTAM = pqTAM;
+	while(!tempTAM.empty()) {
+		pTAM = tempTAM.top();	
+		tempTAM.pop();
+
+		printf("Time for this state: %d\n", pTAM->time);
+		printf("Range: %d ~ %d\n", pTAM->TAMBegin, pTAM->TAMEnd);
+		printf("Power used by this test: %d\n", pTAM->power);
+		if(pTAM->occupyExternal != NULL)
+			printf("External test name: %s\n", (pTAM->occupyExternal->getName()).c_str());
 		else
 			printf("External test name: This TAM interval is not used!\n");
 	}
 }
 
-TAM_Interval::TAM_Interval(int front, int back, int timeStat, int energy,
-													 External *p_External){
-	begin = front;
-	end = back;
-	time = timeStat;
-	power = energy;
-	width = begin - end;
-	occupyExternal = p_External;
+bool Test::checkPreDone()
+{
+	unsigned int i;
+	bool flag;
+
+	flag = true;
+	for(i=0; i<pre.size(); i++) {
+		if(!pre[i]->checkDone()) {
+			flag = false;
+			break;
+		}
+	}
+
+	return flag;
 }

@@ -13,28 +13,35 @@ class Test;
 class External;
 class BIST;
 class Resource;
-class TAM_Interval;
-class cmp_TAM;
 
-class TAM_Interval{
-	public:
-		TAM_Interval(int tot_TAM_width){ begin=0; end=tot_TAM_width-1; time=0; 
-																		 power=0; width=end; occupyExternal=NULL;}
-		TAM_Interval(int front, int back, int timeStat, int energy,
-								 External *p_External);
-		int begin;
-		int end;
-		int time;
-		int power;
-		int width;
-		External *occupyExternal;
+class TAMInterval{
+  public:
+    TAMInterval(int tot_TAM_width){ TAMBegin=0; TAMEnd=tot_TAM_width-1; time=0;
+                                     power=0; width=TAMEnd; occupyExternal=NULL;}
+    TAMInterval(int front, int back, int timeStat, int energy,
+                 External *p_External);
+    int TAMBegin;
+    int TAMEnd;
+    int time;
+    int power;
+    int width;
+    External *occupyExternal;
 };
 
 class cmp_TAM {
-	public:
-		bool operator()(TAM_Interval* lhs, TAM_Interval* rhs) {
-			return lhs->time > rhs->time;
-		}
+  public:
+    bool operator()(TAMInterval* lhs, TAMInterval* rhs) {
+      return lhs->time > rhs->time;
+    }
+};
+
+class TAMContainer {
+  public:
+    void initTAM(int tot_TAM_width);
+    void printTAM();
+
+    priority_queue<TAMInterval*, vector<TAMInterval*>, cmp_TAM> pqTAM;
+		int totPower;
 };
 
 class System{
@@ -44,22 +51,19 @@ class System{
 		void setSysPower(int power){tot_power = power;};
 		void setSysTW(int TAM_width){tot_TAM_width = TAM_width;};
 
-		void initTAM();
-		void printTAM();
-
 		int getSysPower(){return tot_power;};
 		int getSysTW(){return tot_TAM_width;};
 
 		void fillTest();
-		vector<External> possibleExternal(TAM_Interval *p_TAM_Interval);
-		vector<BIST> possibleBIST();
+		vector<External*> possibleExternal(TAMInterval *pTAMInterval);
+		vector<BIST*> possibleBIST();
 
 		vector<Core*> core;
 		map<string, Test*> tot_list;
 		map<string, External*> ext_list;
 		map<string, BIST*> bist_list;
 		map<string, Resource*> res_list;
-		priority_queue<TAM_Interval*, vector<TAM_Interval*>, cmp_TAM> TAM;
+		TAMContainer TAM;
 
 	private:
 		int tot_power;
@@ -127,6 +131,8 @@ class Test{
 		string getName(){return name;};
 		int getPower(){return power;};
 		int getLength(){return length;};
+		bool checkDone(){return done;};
+		bool checkPreDone();
 		vector<Test*>* getPre(){return &pre;};
 	private: 
 		Core* core;
