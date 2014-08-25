@@ -1,6 +1,8 @@
 #ifndef _CORE_H_
 #define _CORE_H_
 
+#include <stdio.h>
+#include <string.h>
 #include <map>
 #include <string>
 #include <vector>
@@ -19,6 +21,8 @@ class System{
 
 		void setSysPower(int power){tot_power = power;};
 		void setSysTW(int TAM_width){tot_TAM_width = TAM_width;};
+		void initTAM(int TAM_width){TAM = new int[TAM_width];for(int i = 0; i < TAM_width; i++)TAM[i] = 0;};
+		void modTAM(int begin, int end, int val){for(int i = begin; i < end; i++)TAM[i] += val;};
 
 		int getSysPower(){return tot_power;};
 		int getSysTW(){return tot_TAM_width;};
@@ -28,6 +32,7 @@ class System{
 		map<string, External*> ext_list;
 		map<string, BIST*> bist_list;
 		map<string, Resource*> res_list;
+		int* TAM;
 	private:
 		int tot_power;
 		int tot_TAM_width;
@@ -50,22 +55,22 @@ class Resource{
 
 class Core{
 	public:
-		Core(){sys = NULL; name = ""; TAM_width = 0; num_test = 0; ext_length = 0; TAM_begin = 0; TAM_end = 0;};
+		Core(){sys = NULL; name = ""; TAM_width = 0; num_test = 0; ext_length = 0;};
 
 		void setSystem(System* sys){this->sys = sys;};
 		void setName(string name){this->name = name;};
 		void setCoreTW(int TAM_width){this->TAM_width = TAM_width;};
 		void setNumTest(int num_test){this->num_test = num_test;};
 		void setExtLength(int ext_length){this->ext_length = ext_length;};
-		void setTAMRange(int begin, int end){this->TAM_begin = begin; this->TAM_end = end;};
+		void addTAMRange(int begin, int end){TAM_Range.push_back(make_pair(begin, end));};
 
 		System* getSystem(){return sys;};
 		string getName(){return name;};
 		int getCoreTW(){return TAM_width;};
 		int getNumTest(){return num_test;};
 		int getExtLength(){return ext_length;};
-		int getTAMBegin(){return TAM_begin;};
-		int getTAMEnd(){return TAM_end;};
+		vector<pair<int, int> > TAM_range;
+
 
 		map<string, External*> ext_list;
 		map<string, BIST*> bist_list;
@@ -75,8 +80,6 @@ class Core{
 		int TAM_width;
 		int num_test;
 		int ext_length;
-		int TAM_begin;
-		int TAM_end;
 };
 
 class Test{
@@ -129,11 +132,12 @@ class BIST: public Test{
 class Interval{
 	public:
 		Interval();
-		Interval(int begin, int end, int weight){this->begin = begin; this->end = end; this->weight = weight; width = end - begin + 1;};
+		Interval(int begin, int end, int length){this->begin = begin; this->end = end; this->length = length; width = end - begin + 1;};
 		int begin;
 		int end;
 		int width;
-		int weight;
+		int length;
 };
+
 
 #endif
