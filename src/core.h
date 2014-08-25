@@ -19,6 +19,8 @@ class System{
 
 		void setSysPower(int power){tot_power = power;};
 		void setSysTW(int TAM_width){tot_TAM_width = TAM_width;};
+		void initTAM(){TAM = new int[tot_TAM_width];for(int i = 0; i < tot_TAM_width; i++)TAM[i] = 0;};
+		void modTAM(int begin, int end, int val){for(int i = begin; i < end; i++)TAM[i]+=val;};
 
 		int getSysPower(){return tot_power;};
 		int getSysTW(){return tot_TAM_width;};
@@ -28,6 +30,7 @@ class System{
 		map<string, External*> ext_list;
 		map<string, BIST*> bist_list;
 		map<string, Resource*> res_list;
+		int* TAM;
 	private:
 		int tot_power;
 		int tot_TAM_width;
@@ -129,11 +132,13 @@ class BIST: public Test{
 class Interval{
 	public:
 		Interval();
-		Interval(int begin, int end, int weight){this->begin = begin; this->end = end; this->weight = weight; width = end - begin + 1;};
+		Interval(int begin, int end, int weight){this->begin = begin; this->end = end; this->length = length; width = end - begin + 1;done = false;};
+		vector<Interval*> split;
 		int begin;
 		int end;
 		int width;
-		int weight;
+		int length;
+		bool done;
 };
 
 #endif

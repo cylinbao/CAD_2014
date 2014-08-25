@@ -4,11 +4,13 @@
 #include <sstream>
 #include <queue>
 #include <stack>
+#include <utility>
 
 using namespace std;
 
 extern System sys;
 vector<vector<string> > pre;
+int avg = 0;
 
 void readInputFile(char* fileName)
 {
@@ -114,6 +116,7 @@ void readInputFile(char* fileName)
 						ss >> type;
 						if(type == "length"){
 							ss >> data;
+							avg += data * new_core->getCoreTW();
 							new_ext->setLength(data);
 							ext_length += data;
 						}
@@ -172,6 +175,8 @@ void readInputFile(char* fileName)
 //			cout<<sys.core[sys.core.size() - 1]->getName()<<":"<<endl<<"TAM width: "<<sys.core[sys.core.size() - 1]->getCoreTW()<<endl<<"Num of Test: "<<sys.core[sys.core.size() - 1]->getNumTest()<<endl<<"Total length of External: "<<sys.core[sys.core.size() - 1]->getExtLength()<<endl;
 		}
 	}
+	avg = avg/sys.getSysTW();
+	cout<<"Avg of each TAM width: "<<avg<<endl;
 //	cout<<"Num of Resource: "<<sys.res_list.size()<<endl;
 //	cout<<"Num of Pre: "<<pre.size()<<endl;
 //	cout<<"Num of Core: "<<sys.core.size()<<endl;
@@ -186,72 +191,47 @@ void setPrecedence()
 	}
 }
 
-struct cmp_core
-{
-	bool operator()(Core* l, Core* r)
-	{
-		return l->getCoreTW() < r->getCoreTW();
-	}
-};
-
-struct cmp_interval
-{
-	bool operator()(Interval* l, Interval* r)
-	{
-		return l->weight > r->weight;
-	}
-};
+int TAM_avg(int begin, int end){
+	int tot = 0;
+	for(int i = begin; i < end; i++)
+		tot += sys.TAM[i];
+	return tot/(end - begin);
+	
+}
 
 void TAMwidthAssign()
 {
-	int i;
-	priority_queue<Core*, vector<Core*>, cmp_core> core_pq;
-	priority_queue<Interval*, vector<Interval*>, cmp_interval> interval_pq;
-	stack<Interval*> improper_interval;
-	Interval* new_interval = new Interval(0, sys.getSysTW() - 1, 0);
-	interval_pq.push(new_interval);
-	for(i = 0; i < (int)sys.core.size(); i++){
-		if(sys.core[i]->getCoreTW() != 0)
-			core_pq.push(sys.core[i]);
-	}
-	while(!core_pq.empty()){
-		while(true){
-			if(core_pq.top()->getCoreTW() < interval_pq.top()->width){
-			cout<<interval_pq.top()->begin<<", "<<interval_pq.top()->end<<endl;
-				Interval* proper_interval = new Interval(interval_pq.top()->begin, interval_pq.top()->end, interval_pq.top()->weight);
-				interval_pq.pop();
 
-				Interval* interval_1 = new Interval(proper_interval->begin, proper_interval->begin + core_pq.top()->getCoreTW() - 1, proper_interval->weight + core_pq.top()->getExtLength());
-				Interval* interval_2 = new Interval(proper_interval->begin + core_pq.top()->getCoreTW(), proper_interval->end, proper_interval->weight);
-
-				interval_pq.push(interval_1);
-				interval_pq.push(interval_2);
-				core_pq.top()->setTAMRange(interval_1->begin, interval_1->end);
-
-				while(!improper_interval.empty()){
-					interval_pq.push(improper_interval.top());
-					improper_interval.pop();
-				}
-				break;
-			}else if(core_pq.top()->getCoreTW() == interval_pq.top()->width){
-			cout<<interval_pq.top()->begin<<", "<<interval_pq.top()->end<<endl;
-				interval_pq.top()->weight += core_pq.top()->getExtLength();
-				core_pq.top()->setTAMRange(interval_pq.top()->begin, interval_pq.top()->end);
-				while(!improper_interval.empty()){
-					interval_pq.push(improper_interval.top());
-					improper_interval.pop();
-				}
-				break;
-
-			}else{
-				improper_interval.push(interval_pq.top());
-				interval_pq.pop();
-			}
-
+	int i, j;
+	sys.initTAM();
+	map<int, map<int, Core*> > set_core_list;
+	map<int, map<int, Core*> >::iterator it_1;
+	map<int, Core*>::iterator it_2;
+	map<int, vector<Interval*> > complement;
+	for(i = 0 ; i < (int)sys.core.size(); i++){
+		if(set_core_list.find(sys.core[i]->getCoreTW()) == set_core_list.end()){
+			map<int, Core*> tmp;
+			tmp[sys.core[i]->getExtLength()] = sys.core[i];
+			set_core_list[sys.core[i]->getCoreTW()] = tmp;
 		}
-		cout<<core_pq.top()->getName()<<"("<<core_pq.top()->getCoreTW()<<"): ";
-		cout<<core_pq.top()->getTAMBegin()<<", "<<core_pq.top()->getTAMEnd()<<endl;
-		core_pq.pop();
+		else
+			set_core_list[sys.core[i]->getCoreTW()].insert(pair<int, Core*>(sys.core[i]->getExtLength(), sys.core[i]));
 	}
-	
+	it_1 = set_core_list.end();
+	for(it_1--;; it_1--){
+		if(it_1->first >= sys.getSysTW()/2){
+			vector<Interval*> tmp_int_list;
+			complement[sys.getSysTW() - it_1->first] = tmp_int_list;
+			for(it_2 = it_1->second.begin(); it_2 != it_1->second.end(); it_2++){
+				sys.modTAM(0, it_2->second->getCoreTW(), it_2->second->getExtLength());
+				Interval* tmp_int = new Interval(it_1->first, sys.getSysTW() - 1, it_2->second->getExtLength());
+				complement[sys.getSysTW() - it_1->first].push_back(tmp_int);
+			}
+		}
+
+		if(it_1 == set_core_list.begin())
+			break;
+	}
+	for(i = 0; i < sys.getSysTW(); i++)
+		cout<<"TAM["<<i<<"]: "<<sys.TAM[i]<<endl;
 }
