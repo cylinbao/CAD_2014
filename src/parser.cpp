@@ -2,21 +2,17 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <queue>
-#include <stack>
-#include <utility>
 
 using namespace std;
 
 extern System sys;
 vector<vector<string> > pre;
-int avg = 0;
 
 void readInputFile(char* fileName)
 {
 	ifstream ifs(fileName);
 	string line, catagory, type, name;
-	int data, num_test, ext_length;
+	int data, num_test, ext_length, TAM_sum = 0;
 	stringstream ss;
 	if(ifs == NULL){
 		perror("Couldn't Open the Input File!");
@@ -116,7 +112,7 @@ void readInputFile(char* fileName)
 						ss >> type;
 						if(type == "length"){
 							ss >> data;
-							avg += data * new_core->getCoreTW();
+							TAM_sum += data * new_core->getCoreTW();
 							new_ext->setLength(data);
 							ext_length += data;
 						}
@@ -172,14 +168,9 @@ void readInputFile(char* fileName)
 					break;
 				}
 			}
-//			cout<<sys.core[sys.core.size() - 1]->getName()<<":"<<endl<<"TAM width: "<<sys.core[sys.core.size() - 1]->getCoreTW()<<endl<<"Num of Test: "<<sys.core[sys.core.size() - 1]->getNumTest()<<endl<<"Total length of External: "<<sys.core[sys.core.size() - 1]->getExtLength()<<endl;
 		}
 	}
-	avg = avg/sys.getSysTW();
-	cout<<"Avg of each TAM width: "<<avg<<endl;
-//	cout<<"Num of Resource: "<<sys.res_list.size()<<endl;
-//	cout<<"Num of Pre: "<<pre.size()<<endl;
-//	cout<<"Num of Core: "<<sys.core.size()<<endl;
+	sys.setTAMAvg(TAM_sum/sys.getSysTW());
 }
 
 void setPrecedence()
@@ -191,47 +182,79 @@ void setPrecedence()
 	}
 }
 
-int TAM_avg(int begin, int end){
-	int tot = 0;
-	for(int i = begin; i < end; i++)
-		tot += sys.TAM[i];
-	return tot/(end - begin);
-	
-}
-
 void TAMwidthAssign()
 {
-
-	int i, j;
+	int i;
 	sys.initTAM();
-	map<int, map<int, Core*> > set_core_list;
+	map<int, map<int, Core*> > set_core_list; // 1. TAM width 2. Length
 	map<int, map<int, Core*> >::iterator it_1;
 	map<int, Core*>::iterator it_2;
-	map<int, vector<Interval*> > complement;
+	map<int, Core*> pre_arrange;
+	Complement complement;
+
 	for(i = 0 ; i < (int)sys.core.size(); i++){
-		if(set_core_list.find(sys.core[i]->getCoreTW()) == set_core_list.end()){
-			map<int, Core*> tmp;
-			tmp[sys.core[i]->getExtLength()] = sys.core[i];
-			set_core_list[sys.core[i]->getCoreTW()] = tmp;
-		}
-		else
-			set_core_list[sys.core[i]->getCoreTW()].insert(pair<int, Core*>(sys.core[i]->getExtLength(), sys.core[i]));
-	}
-	it_1 = set_core_list.end();
-	for(it_1--;; it_1--){
-		if(it_1->first >= sys.getSysTW()/2){
-			vector<Interval*> tmp_int_list;
-			complement[sys.getSysTW() - it_1->first] = tmp_int_list;
-			for(it_2 = it_1->second.begin(); it_2 != it_1->second.end(); it_2++){
-				sys.modTAM(0, it_2->second->getCoreTW(), it_2->second->getExtLength());
-				Interval* tmp_int = new Interval(it_1->first, sys.getSysTW() - 1, it_2->second->getExtLength());
-				complement[sys.getSysTW() - it_1->first].push_back(tmp_int);
+		if(sys.core[i]->getCoreTW() != 0){
+			if(set_core_list.find(sys.core[i]->getCoreTW()) == set_core_list.end()){
+				map<int, Core*> tmp;
+				cout<<sys.core[i]->getExtLength()<<endl;
+				tmp[sys.core[i]->getExtLength()] = sys.core[i];
+				set_core_list[sys.core[i]->getCoreTW()] = tmp;
+			}
+			else{
+				if(set_core_list[sys.core[i]->getCoreTW()].find(sys.core[i]->getExtLength()) == set_core_list[sys.core[i]->getCoreTW()].end())
+					set_core_list[sys.core[i]->getCoreTW()].insert(pair<int, Core*>(sys.core[i]->getExtLength(), sys.core[i]));
+				else{
+					Core* tmp = set_core_list[sys.core[i]->getCoreTW()].find(sys.core[i]->getExtLength())->second;
+					while(tmp->getSameExtLength() != NULL)
+						tmp = tmp->getSameExtLength();
+					tmp->setSameExtLength(sys.core[i]);
+				}
+				cout<<sys.core[i]->getExtLength()<<endl;
+			}
+			if(pre_arrange.find(sys.core[i]->getExtLength()) == pre_arrange.end()){
+				pre_arrange[sys.core[i]->getExtLength()] = sys.core[i];
 			}
 		}
+	}
 
-		if(it_1 == set_core_list.begin())
+	cout<<"Previous Work Begin: "<<endl;
+	it_2 = pre_arrange.end();
+	for(it_2--;;it_2--){
+		if(it_2->first >= sys.getTAMAvg() / 5){
+			Core* core = it_2->second;
+			coreAssign(core, sys, complement);
+		}
+		if(it_2 == pre_arrange.begin())
 			break;
 	}
+	cout<<"Previous Work End"<<endl;
+
 	for(i = 0; i < sys.getSysTW(); i++)
 		cout<<"TAM["<<i<<"]: "<<sys.TAM[i]<<endl;
+	cout<<endl;
+
+	it_1 = set_core_list.end();
+	for(it_1--;; it_1--){
+		it_2 = it_1->second.end();
+		for(it_2--;; it_2--){
+			Core* core = it_2->second;
+			coreAssign(core, sys, complement);
+			if(it_2 == it_1->second.begin())
+				break;
+		}
+		if(it_1 == set_core_list.begin())
+			break;
+
+	}
+
+	int tot_1 = 0;
+	for(i = 0; i < sys.getSysTW(); i++){
+		tot_1 += sys.TAM[i];
+		cout<<"TAM["<<i<<"]: "<<sys.TAM[i]<<endl;
+	}
+	cout<<"TAM_1: "<<tot_1/sys.getSysTW()<<endl;
+	cout<<"TAM avg: "<<sys.getTAMAvg()<<endl;
 }
+
+
+

@@ -2,7 +2,7 @@ CC = g++
 
 LIB = -O3 -Wall -g3
 
-SOURCE = parser.cpp possibleTests.cpp main.cpp
+SOURCE = main.cpp parser.cpp TAM_assign.cpp possibleTests.cpp
 
 TARGET = execute
 
