@@ -57,14 +57,14 @@ class Resource{
 
 class Core{
 	public:
-		Core(){sys = NULL; name = ""; TAM_width = 0; num_test = 0; ext_length = 0; TAM_begin = -1; TAM_end = -1;same_ext_length = NULL; done = false;};
+		Core(){sys = NULL; name = ""; TAM_width = 0; num_test = 0; ext_length = 0; same_ext_length = NULL; done = false;};
 
 		void setSystem(System* sys){this->sys = sys;};
 		void setName(string name){this->name = name;};
 		void setCoreTW(int TAM_width){this->TAM_width = TAM_width;};
 		void setNumTest(int num_test){this->num_test = num_test;};
 		void setExtLength(int ext_length){this->ext_length = ext_length;};
-		void setTAMRange(int begin, int end){this->TAM_begin = begin; this->TAM_end = end;};
+		void setTAMRange(int begin, int end){TAM_range.push_back(make_pair(begin, end));};
 		void setSameExtLength(Core* same_ext_length){this->same_ext_length = same_ext_length;};
 		void setDone(bool done){this->done = done;};
 
@@ -73,10 +73,11 @@ class Core{
 		int getCoreTW(){return TAM_width;};
 		int getNumTest(){return num_test;};
 		int getExtLength(){return ext_length;};
-		int getTAMBegin(){return TAM_begin;};
-		int getTAMEnd(){return TAM_end;};
+		int getTAMBegin(){return TAM_range[0].first;};
+		int getTAMEnd(){return TAM_range[0].second;};
 		Core* getSameExtLength(){return same_ext_length;};
 		bool getDone(){return done;};
+		int initTAM(){return TAM_range.size();};
 
 		map<string, External*> ext_list;
 		map<string, BIST*> bist_list;
@@ -84,11 +85,10 @@ class Core{
 		System* sys;
 		string name;
 		Core* same_ext_length;
+		vector<pair<int, int> >  TAM_range;
 		int TAM_width;
 		int num_test;
 		int ext_length;
-		int TAM_begin;
-		int TAM_end;
 		bool done;
 };
 
