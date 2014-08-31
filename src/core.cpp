@@ -37,6 +37,16 @@ void TAMContainer::printTAM() {
 	}
 }
 
+void TAMContainer::insertInterval(External *pExt)
+{
+	TAMInterval *pTAMInterval;
+
+	pTAMInterval = TAMStat.pqTAM.top()
+	TAMStat.pqTAM.pop();
+
+	if(pExt->)
+}
+
 bool Test::checkPreDone()
 {
 	unsigned int i;

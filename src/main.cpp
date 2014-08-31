@@ -13,8 +13,9 @@ int main(int argc, char** argv)
 	readInputFile(argv[1]);
 	setPrecedence();
 	TAMwidthAssign();
-	sys.TAM.initTAM(sys.getSysTW());
-	sys.TAM.printTAM();
-	//sys.fillTest();
+	sys.setWaitExtList();
+	sys.TAMStat.initTAM(sys.getSysTW());
+	sys.TAMStat.printTAM();
+	sys.fillTest();
 	return 0;
 }

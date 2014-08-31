@@ -39,6 +39,8 @@ class TAMContainer {
   public:
     void initTAM(int tot_TAM_width);
     void printTAM();
+		void insertInterval(External* pExt);
+		void deleteTop();
 
     priority_queue<TAMInterval*, vector<TAMInterval*>, cmp_TAM> pqTAM;
 		int totPower;
@@ -50,6 +52,7 @@ class System{
 
 		void setSysPower(int power){tot_power = power;};
 		void setSysTW(int TAM_width){tot_TAM_width = TAM_width;};
+		void setWaitExtList(){wait_ext_list = ext_list;};
 
 		int getSysPower(){return tot_power;};
 		int getSysTW(){return tot_TAM_width;};
@@ -61,9 +64,10 @@ class System{
 		vector<Core*> core;
 		map<string, Test*> tot_list;
 		map<string, External*> ext_list;
+		map<string, External*> wait_ext_list;
 		map<string, BIST*> bist_list;
 		map<string, Resource*> res_list;
-		TAMContainer TAM;
+		TAMContainer TAMStat;
 
 	private:
 		int tot_power;
@@ -103,17 +107,17 @@ class Core{
 		int getExtLength(){return ext_length;};
 		int getTAMBegin(){return TAM_begin;};
 		int getTAMEnd(){return TAM_end;};
+		vector<pair<int, int> > getTAM_range() {return TAM_range};
 
 		map<string, External*> ext_list;
 		map<string, BIST*> bist_list;
 	private: 
 		System* sys;
 		string name;
+		vector<pair<int, int> >  TAM_range;
 		int TAM_width;
 		int num_test;
 		int ext_length;
-		int TAM_begin;
-		int TAM_end;
 };
 
 class Test{
@@ -142,6 +146,7 @@ class Test{
 		int startTime, endTime;
 		bool done;
 		vector<Test*> pre;
+		vector< pair<int, int> > execTime;
 };
 
 class External: public Test{
