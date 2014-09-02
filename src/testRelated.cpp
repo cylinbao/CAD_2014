@@ -17,6 +17,7 @@ void System::fillTest()
 
 		if(!vecExternal.empty()) {
 			pExt = vecExternal[0];// Only get the first one in this version
+			wait_ext_list.erase( wait_ext_list.find(pExt->getName()));// delete it from wait list
 			intvTime = pTAMInterval->time;
 			timePair = make_pair(intvTime, intvTime+pExt->getLength());
 			pExt->getExecTime()->push_back(timePair);
@@ -35,14 +36,14 @@ void System::fillTest()
 vector<External*> System::possibleExternal(TAMInterval *pTAMInterval)
 {
   vector<External*> vecExternal;
-	map<string, External*> inerExtList;
+	//map<string, External*> inerExtList;
 	map<string, External*>::iterator itExt;
 	External *pExt;
 	//vector< pair<int, int> >::iterator itTAMRange;
 	//int begin, end;
 
-	inerExtList = ext_list;
-	for(itExt = inerExtList.begin(); itExt != inerExtList.end(); itExt++) {
+	//inerExtList = ext_list;
+	for(itExt = wait_ext_list.begin(); itExt != wait_ext_list.end(); itExt++) {
 		pExt = itExt->second;	
 		// check this test done or not
 		if(pExt->checkDone())

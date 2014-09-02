@@ -16,6 +16,6 @@ int main(int argc, char** argv)
 	sys.setWaitExtList();
 	sys.TAMStat.initTAM(sys.getSysTW());
 	sys.TAMStat.printTAM();
-	sys.fillTest();
+	//sys.fillTest(); //test this function
 	return 0;
 }
