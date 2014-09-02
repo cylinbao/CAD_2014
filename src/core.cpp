@@ -36,15 +36,22 @@ void TAMContainer::printTAM() {
 			printf("External test name: This TAM interval is not used!\n");
 	}
 }
-
+// ------------ Work on this function ---------------------------------------//
 void TAMContainer::insertInterval(External *pExt)
 {
+/*
 	TAMInterval *pTAMInterval;
 
 	pTAMInterval = TAMStat.pqTAM.top()
 	TAMStat.pqTAM.pop();
 
 	if(pExt->)
+*/
+}
+
+void TAMContainer::deleteTop()
+{
+
 }
 
 bool Test::checkPreDone()

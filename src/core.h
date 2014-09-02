@@ -107,7 +107,7 @@ class Core{
 		int getExtLength(){return ext_length;};
 		int getTAMBegin(){return TAM_begin;};
 		int getTAMEnd(){return TAM_end;};
-		vector<pair<int, int> > getTAM_range() {return TAM_range};
+		vector<pair<int, int> > getTAM_range() {return TAM_range;};
 
 		map<string, External*> ext_list;
 		map<string, BIST*> bist_list;
@@ -118,6 +118,8 @@ class Core{
 		int TAM_width;
 		int num_test;
 		int ext_length;
+		int TAM_begin;
+		int TAM_end;
 };
 
 class Test{
@@ -138,6 +140,7 @@ class Test{
 		bool checkDone(){return done;};
 		bool checkPreDone();
 		vector<Test*>* getPre(){return &pre;};
+		vector< pair<int, int> >* getExecTime(){return &execTime;};
 	private: 
 		Core* core;
 		string name;

@@ -19,7 +19,7 @@ void System::fillTest()
 			pExt = vecExternal[0];// Only get the first one in this version
 			intvTime = pTAMInterval->time;
 			timePair = make_pair(intvTime, intvTime+pExt->getLength());
-			pExt->execTime.push_back(timePair);
+			pExt->getExecTime()->push_back(timePair);
 
 			TAMStat.insertInterval(pExt);
 			
@@ -79,20 +79,20 @@ vector<External*> System::possibleExternal(TAMInterval *pTAMInterval)
 				TAMStat.pqTAM.pop();
 			}
 
-			for(int i=0; i < storeTAMIntv.size(); i++) {
-				TAMStat.push(storeTAMIntv[i]);
+			for(int i=0; i < (int)storeTAMIntv.size(); i++) {
+				TAMStat.pqTAM.push(storeTAMIntv[i]);
 			}
 
 			//////////////////////////////////////////////
 			// check this ext can be candidate or not   //
 			//////////////////////////////////////////////
 			flag = new bool [pExt->getCore()->getTAM_range().size()];
-			for(int i=0; i < pExt->getCore()->getTAM_range().size(); i++) {
+			for(int i=0; i < (int)pExt->getCore()->getTAM_range().size(); i++) {
 				flag[i] = false;
 			}
 			
-			for(int i=0; i < pExt->getCore()->getTAM_range().size(); i++) {
-				for(int j=0; j < storeTAMIntv.size(); j++) {
+			for(int i=0; i < (int)pExt->getCore()->getTAM_range().size(); i++) {
+				for(int j=0; j < (int)storeTAMIntv.size(); j++) {
 					if((pExt->getCore()->getTAM_range()[i].first >= storeTAMIntv[j]->TAMBegin) && 
 							(pExt->getCore()->getTAM_range()[i].second <= storeTAMIntv[j]->TAMEnd)) {
 						vecExternal.push_back(pExt);
@@ -103,7 +103,7 @@ vector<External*> System::possibleExternal(TAMInterval *pTAMInterval)
 			}
 
 			flagExt = true;
-			for(int i=0; i < pExt->getCore()->getTAM_range().size(); i++) {
+			for(int i=0; i < (int)pExt->getCore()->getTAM_range().size(); i++) {
 				if(flag[i] == false)
 					flagExt = false;
 			}
