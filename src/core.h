@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <iostream>
 
 using namespace std;
 
@@ -53,7 +54,11 @@ class System{
 		void setSysPower(int power){tot_power = power;};
 		void setSysTW(int TAM_width){tot_TAM_width = TAM_width;};
 		void setWaitExtList(){wait_ext_list = ext_list;};
+		void setTAMAvg(int avg){this->avg = avg;};
+		void initTAM(){TAM = new int[tot_TAM_width];for(int i = 0; i < tot_TAM_width; i++)TAM[i] = 0;};
+		void modTAM(int begin, int end, int val){for(int i = begin; i <= end; i++)TAM[i]+=val;};
 
+		int getTAMAvg(){return avg;};
 		int getSysPower(){return tot_power;};
 		int getSysTW(){return tot_TAM_width;};
 
@@ -69,9 +74,11 @@ class System{
 		map<string, Resource*> res_list;
 		TAMContainer TAMStat;
 
+		int* TAM;
 	private:
 		int tot_power;
 		int tot_TAM_width;
+		int avg;
 };
 
 class Resource{
@@ -91,35 +98,40 @@ class Resource{
 
 class Core{
 	public:
-		Core(){sys = NULL; name = ""; TAM_width = 0; num_test = 0; ext_length = 0; TAM_begin = 0; TAM_end = 0;};
+		Core(){sys = NULL; name = ""; TAM_width = 0; num_test = 0; ext_length = 0; same_ext_length = NULL; done = false;};
 
 		void setSystem(System* sys){this->sys = sys;};
 		void setName(string name){this->name = name;};
 		void setCoreTW(int TAM_width){this->TAM_width = TAM_width;};
 		void setNumTest(int num_test){this->num_test = num_test;};
 		void setExtLength(int ext_length){this->ext_length = ext_length;};
-		void setTAMRange(int begin, int end){this->TAM_begin = begin; this->TAM_end = end;};
+		void setTAMRange(int begin, int end){TAM_range.push_back(make_pair(begin, end));};
+		void setSameExtLength(Core* same_ext_length){this->same_ext_length = same_ext_length;};
+		void setDone(bool done){this->done = done;};
 
 		System* getSystem(){return sys;};
 		string getName(){return name;};
 		int getCoreTW(){return TAM_width;};
 		int getNumTest(){return num_test;};
 		int getExtLength(){return ext_length;};
-		int getTAMBegin(){return TAM_begin;};
-		int getTAMEnd(){return TAM_end;};
 		vector<pair<int, int> > getTAM_range() {return TAM_range;};
+		int getTAMBegin(){return TAM_range[0].first;};
+		int getTAMEnd(){return TAM_range[0].second;};
+		Core* getSameExtLength(){return same_ext_length;};
+		bool getDone(){return done;};
+		int initTAM(){return TAM_range.size();};
 
 		map<string, External*> ext_list;
 		map<string, BIST*> bist_list;
 	private: 
 		System* sys;
 		string name;
+		Core* same_ext_length;
 		vector<pair<int, int> >  TAM_range;
 		int TAM_width;
 		int num_test;
 		int ext_length;
-		int TAM_begin;
-		int TAM_end;
+		bool done;
 };
 
 class Test{
@@ -178,11 +190,12 @@ class BIST: public Test{
 class Interval{
 	public:
 		Interval();
-		Interval(int begin, int end, int weight){this->begin = begin; this->end = end; this->weight = weight; width = end - begin + 1;};
+		Interval(int begin, int end, int length){this->begin = begin; this->end = end; this->length = length; width = end - begin + 1;done = false;};
 		int begin;
 		int end;
 		int width;
-		int weight;
+		int length;
+		bool done;
 };
 
 #endif
