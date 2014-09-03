@@ -1,5 +1,24 @@
 #include "core.h"
 #include "stdio.h"
+#include "iostream"
+
+void System::printTAMAssignment()
+{
+	int i, j, first, second;
+	vector<pair<int, int> >  range;
+
+	for(i=0; i<(int)core.size(); i++) {
+		cout << "Core name: " << core[i]->getName() << endl;
+		range = core[i]->getTAM_range();
+
+		for(j=0; j<(int)range.size(); j++) {
+			first = range[j].first;	
+			second = range[j].second;	
+
+			cout << j << ". [" << first << ", " << second << "]\n";
+		}
+	}
+}
 
 TAMInterval::TAMInterval(int front, int back, int timeStat, int energy,
 													 External *p_External){
@@ -69,3 +88,4 @@ bool Test::checkPreDone()
 
 	return flag;
 }
+

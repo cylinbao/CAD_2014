@@ -16,6 +16,9 @@ int main(int argc, char** argv)
 	sys.setWaitExtList();
 	sys.TAMStat.initTAM(sys.getSysTW());
 	sys.TAMStat.printTAM();
-	//sys.fillTest(); //test this function
+	sys.printTAMAssignment();
+	printf("External List Size: %d\n", sys.ext_list.size());
+	printf("Wiat External List Size: %d\n", sys.wait_ext_list.size());
+	sys.fillTest(); //test this function
 	return 0;
 }

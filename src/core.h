@@ -57,6 +57,7 @@ class System{
 		void setTAMAvg(int avg){this->avg = avg;};
 		void initTAM(){TAM = new int[tot_TAM_width];for(int i = 0; i < tot_TAM_width; i++)TAM[i] = 0;};
 		void modTAM(int begin, int end, int val){for(int i = begin; i <= end; i++)TAM[i]+=val;};
+		void printTAMAssignment();
 
 		int getTAMAvg(){return avg;};
 		int getSysPower(){return tot_power;};
@@ -114,11 +115,12 @@ class Core{
 		int getCoreTW(){return TAM_width;};
 		int getNumTest(){return num_test;};
 		int getExtLength(){return ext_length;};
-		vector<pair<int, int> > getTAM_range() {return TAM_range;};
 		int getTAMBegin(){return TAM_range[0].first;};
 		int getTAMEnd(){return TAM_range[0].second;};
+		vector<pair<int, int> > getTAM_range() {return TAM_range;};
 		Core* getSameExtLength(){return same_ext_length;};
 		bool getDone(){return done;};
+
 		int initTAM(){return TAM_range.size();};
 
 		map<string, External*> ext_list;
