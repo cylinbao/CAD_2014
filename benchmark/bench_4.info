@@ -1,0 +1,789 @@
+
+System
+begin
+	TAM_width		32
+	Power			2362
+	Precedence		test_23_3_2 > test_78_3_1
+	Precedence		test_30_3_1 > test_47_3_2
+	Precedence		test_6_3_7 > test_75_3_1
+	Precedence		test_58_3_1 > test_70_3_3
+	Resource		bsrc_1 bsrc_2 
+end
+
+
+Core core_1
+begin
+	TAM_width	0
+	BIST		test_1_1_1 length 103 power 37
+	BIST		test_1_1_2 length 455 power 11
+end
+
+
+Core core_2
+begin
+	TAM_width	16
+	External	test_2_3_1 length 813 power 320
+	External	test_2_3_2 length 207 power 305
+	BIST		test_2_1_1 length 993 power 16
+end
+
+
+Core core_3
+begin
+	TAM_width	8
+	External	test_3_3_1 length 958 power 445
+	External	test_3_3_2 length 947 power 440
+	External	test_3_3_3 length 479 power 445
+	External	test_3_3_4 length 294 power 465
+	External	test_3_3_5 length 301 power 465
+	External	test_3_3_6 length 751 power 440
+	External	test_3_3_7 length 193 power 455
+	External	test_3_3_8 length 565 power 450
+	External	test_3_3_9 length 656 power 460
+end
+
+
+Core core_4
+begin
+	TAM_width	8
+	External	test_4_3_2 length 458 power 365
+	External	test_4_3_3 length 837 power 375
+	External	test_4_3_5 length 477 power 355
+	External	test_4_3_1_4 length 1191 power 375 partition 2
+end
+
+
+Core core_5
+begin
+	TAM_width	16
+	External	test_5_3_1 length 981 power 380
+	External	test_5_3_2 length 262 power 375
+end
+
+
+Core core_6
+begin
+	TAM_width	8
+	External	test_6_3_1 length 145 power 260
+	External	test_6_3_2 length 1869 power 365
+	External	test_6_3_3 length 2574 power 355
+	External	test_6_3_4 length 165 power 295
+	External	test_6_3_5 length 629 power 320
+	External	test_6_3_6 length 230 power 285
+	External	test_6_3_7 length 277 power 310
+end
+
+
+Core core_7
+begin
+	TAM_width	8
+	External	test_7_3_1 length 180 power 405
+	External	test_7_3_2 length 233 power 405
+	External	test_7_3_3 length 605 power 405
+	External	test_7_3_4 length 343 power 400
+end
+
+
+Core core_8
+begin
+	TAM_width	4
+	External	test_8_3_1 length 131 power 330
+	External	test_8_3_2 length 308 power 445
+	External	test_8_3_3 length 421 power 350
+	External	test_8_3_4 length 976 power 415
+	External	test_8_3_5 length 936 power 465
+	External	test_8_3_6 length 1299 power 365
+end
+
+
+Core core_9
+begin
+	TAM_width	8
+	External	test_9_3_1 length 849 power 495
+	External	test_9_3_2 length 431 power 475
+	External	test_9_3_3 length 353 power 480
+	External	test_9_3_4 length 2658 power 485
+	External	test_9_3_5 length 167 power 495
+	External	test_9_3_6 length 331 power 480
+	External	test_9_3_7 length 925 power 485
+	External	test_9_3_8 length 641 power 490
+	External	test_9_3_9 length 166 power 475
+end
+
+
+Core core_10
+begin
+	TAM_width	4
+	External	test_10_3_1 length 493 power 435
+	External	test_10_3_2 length 110 power 295
+	External	test_10_3_3 length 388 power 280
+	External	test_10_3_4 length 612 power 320
+	External	test_10_3_5 length 223 power 410
+	External	test_10_3_6 length 555 power 315
+	External	test_10_3_7 length 679 power 250
+	External	test_10_3_8 length 818 power 380
+	External	test_10_3_9 length 439 power 365
+	External	test_10_3_10 length 203 power 370
+	External	test_10_3_11 length 1911 power 355
+	External	test_10_3_12 length 431 power 355
+	External	test_10_3_13 length 334 power 430
+	External	test_10_3_14 length 275 power 275
+	External	test_10_3_15 length 1377 power 245
+	External	test_10_3_16 length 913 power 225
+	External	test_10_3_17 length 1314 power 355
+	External	test_10_3_18 length 539 power 345
+	External	test_10_3_19 length 152 power 400
+	External	test_10_3_20 length 859 power 415
+	External	test_10_3_21 length 848 power 415
+	External	test_10_3_22 length 1182 power 375
+	External	test_10_3_23 length 590 power 320
+	External	test_10_3_24 length 1188 power 280
+	BIST		test_10_2_1 length 685 power 34 resource bsrc_1
+end
+
+
+Core core_11
+begin
+	TAM_width	12
+	External	test_11_3_1 length 236 power 420
+	External	test_11_3_2 length 917 power 425
+end
+
+
+Core core_12
+begin
+	TAM_width	12
+	External	test_12_3_1 length 2415 power 330
+	External	test_12_3_2 length 910 power 310
+	External	test_12_3_3 length 854 power 275
+	External	test_12_3_4 length 956 power 305
+	External	test_12_3_5 length 270 power 335
+end
+
+
+Core core_13
+begin
+	TAM_width	8
+	External	test_13_3_1 length 492 power 450
+	External	test_13_3_2 length 229 power 310
+	External	test_13_3_3 length 594 power 370
+	External	test_13_3_4 length 804 power 365
+	External	test_13_3_5 length 122 power 270
+	External	test_13_3_6 length 958 power 255
+	External	test_13_3_7 length 753 power 290
+	External	test_13_3_8 length 938 power 415
+	External	test_13_3_9 length 2628 power 490
+	External	test_13_3_10 length 910 power 485
+	External	test_13_3_11 length 275 power 260
+end
+
+
+Core core_14
+begin
+	TAM_width	12
+	External	test_14_3_1 length 836 power 250
+	External	test_14_3_2 length 294 power 300
+end
+
+
+Core core_15
+begin
+	TAM_width	16
+	External	test_15_3_1 length 399 power 380
+	External	test_15_3_2 length 907 power 275
+end
+
+
+Core core_16
+begin
+	TAM_width	12
+	External	test_16_3_1 length 2493 power 470
+	External	test_16_3_2 length 950 power 435
+	BIST		test_16_1_1 length 581 power 32
+end
+
+
+Core core_17
+begin
+	TAM_width	16
+	External	test_17_3_1 length 139 power 480
+	External	test_17_3_2 length 819 power 350
+end
+
+
+Core core_18
+begin
+	TAM_width	16
+	External	test_18_3_1 length 464 power 425
+	External	test_18_3_2 length 139 power 460
+	BIST		test_18_1_1 length 951 power 47
+end
+
+
+Core core_19
+begin
+	TAM_width	0
+	BIST		test_19_2_1 length 935 power 6 resource bsrc_2
+	BIST		test_19_1_1 length 275 power 42
+end
+
+
+Core core_20
+begin
+	TAM_width	24
+	External	test_20_3_1 length 887 power 455
+	BIST		test_20_2_1 length 790 power 51 resource bsrc_1
+end
+
+
+Core core_21
+begin
+	TAM_width	8
+	External	test_21_3_1 length 383 power 420
+	External	test_21_3_2 length 175 power 425
+	External	test_21_3_3 length 958 power 420
+	External	test_21_3_4 length 756 power 435
+	BIST		test_21_1_1 length 695 power 26
+end
+
+
+Core core_22
+begin
+	TAM_width	24
+	External	test_22_3_1 length 2964 power 325
+	External	test_22_3_2 length 313 power 320
+end
+
+
+Core core_23
+begin
+	TAM_width	8
+	External	test_23_3_1 length 789 power 445
+	External	test_23_3_2 length 681 power 460
+	External	test_23_3_3 length 1578 power 435
+	External	test_23_3_4 length 187 power 430
+	External	test_23_3_5 length 1728 power 445
+	External	test_23_3_6 length 345 power 450
+end
+
+
+Core core_24
+begin
+	TAM_width	12
+	External	test_24_3_1 length 337 power 295
+	External	test_24_3_2 length 915 power 335
+	External	test_24_3_3 length 1296 power 340
+end
+
+
+Core core_25
+begin
+	TAM_width	20
+	External	test_25_3_1 length 636 power 340
+	BIST		test_25_1_1 length 550 power 32
+end
+
+
+Core core_26
+begin
+	TAM_width	16
+	External	test_26_3_1 length 298 power 395
+	BIST		test_26_1_1 length 925 power 26
+end
+
+
+Core core_27
+begin
+	TAM_width	16
+	External	test_27_3_1 length 537 power 340
+	External	test_27_3_2 length 876 power 335
+end
+
+
+Core core_28
+begin
+	TAM_width	20
+	External	test_28_3_1 length 2952 power 365
+	External	test_28_3_2 length 640 power 415
+	BIST		test_28_2_1 length 462 power 42 resource bsrc_2
+	BIST		test_28_2_2 length 918 power 55 resource bsrc_2
+end
+
+
+Core core_29
+begin
+	TAM_width	12
+	External	test_29_3_1 length 855 power 500
+	External	test_29_3_2 length 487 power 345
+	External	test_29_3_3 length 285 power 400
+	External	test_29_3_4 length 534 power 350
+	External	test_29_3_5 length 787 power 460
+end
+
+
+Core core_30
+begin
+	TAM_width	28
+	External	test_30_3_1 length 867 power 290
+	BIST		test_30_1_1 length 695 power 10
+end
+
+
+Core core_31
+begin
+	TAM_width	16
+	External	test_31_3_1 length 2967 power 450
+	External	test_31_3_2 length 565 power 280
+	External	test_31_3_3 length 605 power 440
+	External	test_31_3_4 length 977 power 375
+end
+
+
+Core core_32
+begin
+	TAM_width	16
+	External	test_32_3_1 length 2949 power 440
+	External	test_32_3_2 length 594 power 465
+end
+
+
+Core core_33
+begin
+	TAM_width	0
+	BIST		test_33_1_1 length 972 power 14
+end
+
+
+Core core_34
+begin
+	TAM_width	8
+	External	test_34_3_1 length 596 power 405
+	External	test_34_3_2 length 1035 power 465
+	External	test_34_3_3 length 1227 power 455
+	External	test_34_3_4 length 147 power 295
+	External	test_34_3_5 length 968 power 290
+end
+
+
+Core core_35
+begin
+	TAM_width	28
+	External	test_35_3_1 length 200 power 355
+end
+
+
+Core core_36
+begin
+	TAM_width	24
+	External	test_36_3_1 length 778 power 225
+	BIST		test_36_1_1 length 231 power 45
+	BIST		test_36_1_2 length 991 power 2
+end
+
+
+Core core_37
+begin
+	TAM_width	8
+	External	test_37_3_1 length 481 power 285
+	External	test_37_3_2 length 172 power 300
+	External	test_37_3_3 length 963 power 300
+end
+
+
+Core core_38
+begin
+	TAM_width	0
+	BIST		test_38_2_1 length 646 power 76 resource bsrc_1
+	BIST		test_38_1_1 length 704 power 4
+end
+
+
+Core core_39
+begin
+	TAM_width	32
+	External	test_39_3_1 length 875 power 320
+	BIST		test_39_1_1 length 685 power 12
+end
+
+
+Core core_40
+begin
+	TAM_width	0
+	BIST		test_40_2_1 length 993 power 51 resource bsrc_2
+end
+
+
+Core core_41
+begin
+	TAM_width	12
+	External	test_41_3_1 length 1794 power 455
+	External	test_41_3_2 length 2826 power 445
+	External	test_41_3_3 length 187 power 440
+	External	test_41_3_4 length 887 power 430
+end
+
+
+Core core_42
+begin
+	TAM_width	20
+	External	test_42_3_1 length 616 power 480
+	External	test_42_3_2 length 808 power 430
+	BIST		test_42_1_1 length 538 power 79
+end
+
+
+Core core_43
+begin
+	TAM_width	20
+	External	test_43_3_1 length 2583 power 300
+	External	test_43_3_2 length 850 power 300
+end
+
+
+Core core_44
+begin
+	TAM_width	4
+	External	test_44_3_1 length 130 power 395
+	External	test_44_3_2 length 538 power 300
+	External	test_44_3_3 length 884 power 290
+	External	test_44_3_4 length 518 power 310
+	External	test_44_3_5 length 216 power 260
+	External	test_44_3_6 length 1170 power 375
+	External	test_44_3_7 length 410 power 370
+	External	test_44_3_8 length 212 power 260
+	External	test_44_3_9 length 135 power 300
+	External	test_44_3_10 length 974 power 355
+	External	test_44_3_11 length 515 power 275
+	External	test_44_3_12 length 651 power 300
+	External	test_44_3_13 length 692 power 340
+	External	test_44_3_14 length 2964 power 335
+	External	test_44_3_15 length 2559 power 395
+	External	test_44_3_16 length 2979 power 300
+	External	test_44_3_17 length 2673 power 390
+end
+
+
+Core core_45
+begin
+	TAM_width	8
+	External	test_45_3_1 length 1404 power 340
+	External	test_45_3_2 length 391 power 315
+	External	test_45_3_3 length 804 power 335
+	External	test_45_3_4 length 892 power 300
+	External	test_45_3_5 length 242 power 255
+	External	test_45_3_6 length 2634 power 330
+end
+
+
+Core core_46
+begin
+	TAM_width	20
+	External	test_46_3_1 length 1524 power 260
+	BIST		test_46_1_1 length 591 power 8
+	BIST		test_46_1_2 length 522 power 7
+end
+
+
+Core core_47
+begin
+	TAM_width	12
+	External	test_47_3_1 length 564 power 415
+	External	test_47_3_2 length 493 power 415
+	BIST		test_47_2_1 length 401 power 31 resource bsrc_1
+end
+
+
+Core core_48
+begin
+	TAM_width	16
+	External	test_48_3_1 length 791 power 330
+	External	test_48_3_2 length 639 power 335
+	External	test_48_3_3 length 690 power 350
+end
+
+
+Core core_49
+begin
+	TAM_width	16
+	External	test_49_3_1 length 492 power 265
+	BIST		test_49_1_1 length 561 power 5
+end
+
+
+Core core_50
+begin
+	TAM_width	28
+	External	test_50_3_1 length 403 power 350
+	BIST		test_50_1_1 length 307 power 59
+end
+
+
+Core core_51
+begin
+	TAM_width	0
+	BIST		test_51_1_1 length 700 power 37
+end
+
+
+Core core_52
+begin
+	TAM_width	8
+	External	test_52_3_1 length 800 power 365
+	External	test_52_3_2 length 177 power 345
+	External	test_52_3_3 length 964 power 365
+	External	test_52_3_4 length 453 power 270
+	External	test_52_3_5 length 322 power 305
+end
+
+
+Core core_53
+begin
+	TAM_width	24
+	External	test_53_3_1 length 693 power 410
+	External	test_53_3_2 length 869 power 400
+	BIST		test_53_2_1 length 507 power 56 resource bsrc_2
+end
+
+
+Core core_54
+begin
+	TAM_width	8
+	External	test_54_3_1 length 834 power 385
+	External	test_54_3_2 length 465 power 340
+	External	test_54_3_3 length 790 power 375
+end
+
+
+Core core_55
+begin
+	TAM_width	4
+	External	test_55_3_1 length 990 power 250
+	External	test_55_3_2 length 688 power 255
+	External	test_55_3_3 length 1000 power 255
+end
+
+
+Core core_56
+begin
+	TAM_width	28
+	External	test_56_3_1 length 659 power 340
+	BIST		test_56_1_1 length 694 power 41
+end
+
+
+Core core_57
+begin
+	TAM_width	20
+	External	test_57_3_1 length 286 power 285
+	External	test_57_3_2 length 356 power 345
+	BIST		test_57_2_1 length 648 power 2 resource bsrc_2
+end
+
+
+Core core_58
+begin
+	TAM_width	12
+	External	test_58_3_1 length 312 power 325
+end
+
+
+Core core_59
+begin
+	TAM_width	4
+	External	test_59_3_1 length 281 power 285
+	External	test_59_3_2 length 615 power 365
+	External	test_59_3_3 length 582 power 365
+	External	test_59_3_4 length 714 power 285
+	External	test_59_3_5 length 664 power 355
+end
+
+
+Core core_60
+begin
+	TAM_width	24
+	External	test_60_3_1 length 2193 power 470
+	BIST		test_60_1_1 length 129 power 2
+end
+
+
+Core core_61
+begin
+	TAM_width	16
+	External	test_61_3_1 length 998 power 335
+	External	test_61_3_2 length 623 power 335
+end
+
+
+Core core_62
+begin
+	TAM_width	16
+	External	test_62_3_1 length 567 power 305
+	BIST		test_62_1_1 length 580 power 13
+	External	test_62_3_2_3 length 1168 power 260 partition 2
+end
+
+
+Core core_63
+begin
+	TAM_width	0
+	BIST		test_63_2_1 length 840 power 82 resource bsrc_2
+	BIST		test_63_1_1 length 251 power 53
+end
+
+
+Core core_64
+begin
+	TAM_width	8
+	External	test_64_3_1 length 687 power 405
+	External	test_64_3_2 length 641 power 300
+	External	test_64_3_3 length 558 power 370
+	External	test_64_3_4 length 833 power 310
+	External	test_64_3_5 length 701 power 390
+	External	test_64_3_6 length 604 power 345
+	BIST		test_64_1_1 length 229 power 46
+end
+
+
+Core core_65
+begin
+	TAM_width	32
+	External	test_65_3_1 length 1572 power 410
+	BIST		test_65_1_1 length 865 power 23
+end
+
+
+Core core_66
+begin
+	TAM_width	0
+	BIST		test_66_1_1 length 946 power 52
+	BIST		test_66_1_2 length 125 power 3
+	BIST		test_66_1_3 length 301 power 31
+end
+
+
+Core core_67
+begin
+	TAM_width	32
+	External	test_67_3_1 length 435 power 320
+	External	test_67_3_2 length 576 power 325
+end
+
+
+Core core_68
+begin
+	TAM_width	0
+	BIST		test_68_2_1 length 991 power 25 resource bsrc_1
+	BIST		test_68_1_1 length 367 power 69
+	BIST		test_68_1_2 length 879 power 21
+end
+
+
+Core core_69
+begin
+	TAM_width	0
+	BIST		test_69_2_1 length 551 power 8 resource bsrc_1
+	BIST		test_69_1_1 length 652 power 55
+end
+
+
+Core core_70
+begin
+	TAM_width	16
+	External	test_70_3_1 length 702 power 225
+	External	test_70_3_2 length 761 power 235
+	External	test_70_3_3 length 732 power 245
+end
+
+
+Core core_71
+begin
+	TAM_width	16
+	External	test_71_3_1 length 693 power 440
+	External	test_71_3_2 length 1635 power 445
+end
+
+
+Core core_72
+begin
+	TAM_width	8
+	External	test_72_3_1 length 251 power 250
+	External	test_72_3_2 length 475 power 205
+	External	test_72_3_3 length 231 power 225
+	External	test_72_3_4 length 2127 power 245
+	External	test_72_3_5 length 636 power 230
+end
+
+
+Core core_73
+begin
+	TAM_width	16
+	External	test_73_3_1 length 637 power 280
+	BIST		test_73_1_1 length 110 power 6
+	BIST		test_73_1_2 length 684 power 45
+end
+
+
+Core core_74
+begin
+	TAM_width	8
+	External	test_74_3_1 length 2415 power 270
+	External	test_74_3_2 length 716 power 305
+	External	test_74_3_3 length 1185 power 335
+	External	test_74_3_4 length 805 power 270
+	External	test_74_3_5 length 335 power 330
+	External	test_74_3_6 length 772 power 270
+end
+
+
+Core core_75
+begin
+	TAM_width	20
+	External	test_75_3_1 length 716 power 385
+	BIST		test_75_1_1 length 917 power 63
+end
+
+
+Core core_76
+begin
+	TAM_width	12
+	External	test_76_3_1 length 1326 power 325
+	External	test_76_3_2 length 405 power 320
+end
+
+
+Core core_77
+begin
+	TAM_width	16
+	External	test_77_3_1 length 779 power 440
+	BIST		test_77_1_1 length 448 power 6
+	BIST		test_77_1_2 length 159 power 44
+	BIST		test_77_1_3 length 624 power 52
+end
+
+
+Core core_78
+begin
+	TAM_width	16
+	External	test_78_3_1 length 298 power 400
+	External	test_78_3_2 length 228 power 330
+	BIST		test_78_2_1 length 947 power 39 resource bsrc_1
+end
+
+
+Core core_79
+begin
+	TAM_width	28
+	External	test_79_3_1 length 359 power 205
+	External	test_79_3_2 length 951 power 205
+	BIST		test_79_1_1 length 807 power 11
+end
+
+
+Core core_80
+begin
+	TAM_width	12
+	External	test_80_3_1 length 436 power 425
+	External	test_80_3_2 length 192 power 305
+	External	test_80_3_3 length 625 power 435
+	External	test_80_3_4 length 2439 power 255
+end
