@@ -206,6 +206,14 @@ void fixedAssign(Core* core, System& sys, Complement& complement, int& ext_lengt
 	ext_length = 0;
 }
 
+struct cmp
+{
+        bool operator()(int& l, int& r)
+        {
+                return l > r;
+        }
+};
+
 bool randomAssign(Core* core, System& sys, Complement& complement, int& ext_length)
 {
 
@@ -227,18 +235,13 @@ bool randomAssign(Core* core, System& sys, Complement& complement, int& ext_leng
 		map<int, int>::iterator tmp_it, tmp_it_2;
 		map<int, map<int, Interval*> >::iterator it_int_1;
 		map<int, Interval*>::iterator it_int_2;
+		priority_queue<int, vector<int>, cmp> TAM;
 
 		it = split.begin();
 		while(i != core->getCoreTW()){
 			for(int j = 0; j < (int)it->second.size(); j++){
 				sys.modTAM(it->second[j], it->second[j], ext_length);
-				if(begin == -1)
-					begin = it->second[j];
-				else if(j + 1 == (int)it->second.size() || (it->second[j] - 1 != it->second[j - 1])){
-					end = it->second[j];
-					tmp_range[begin] = end;
-					begin = -1;
-				}
+				TAM.push(it->second[j]);
 				i++;
 				if(i == core->getCoreTW())
 					break;
@@ -247,14 +250,29 @@ bool randomAssign(Core* core, System& sys, Complement& complement, int& ext_leng
 				break;
 			it++;
 		}
-		cout<<"Random Assign"<<endl;
 
-		for(tmp_it = tmp_range.begin(); tmp_it != tmp_range.end(); tmp_it++){
-				core->setTAMRange(tmp_it->first, tmp_it->second);
-				cout<<"Begin: "<<tmp_it->first<<endl;
-				cout<<"End: "<<tmp_it->second<<endl;
-				cout<<"Width: "<<tmp_it->second - tmp_it->first + 1<<endl;
+		cout<<"Random Assign"<<endl;
+		while(!TAM.empty()){
+				if(begin == -1){
+					begin = TAM.top();
+					end = TAM.top();
+				}
+				else if(end != TAM.top() - 1){
+					core->setTAMRange(begin, end);
+					cout<<begin<<", "<<end<<endl;
+					cout<<"Width: "<<end - begin + 1<<endl;
+					begin = TAM.top();
+				}
+				if(TAM.size() == 1){
+					end = TAM.top();
+					core->setTAMRange(begin, end);
+					cout<<begin<<", "<<end<<endl;
+					cout<<"Width: "<<end - begin + 1<<endl;
+				}
+				end = TAM.top();
+				TAM.pop();
 		}
+		cout<<endl;
 		cout<<"Total Width: "<<core->getCoreTW()<<endl;
 		cout<<"Length Added: "<<ext_length<<endl;
 		cout<<endl;
