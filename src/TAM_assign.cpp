@@ -222,12 +222,20 @@ bool randomAssign(Core* core, System& sys, Complement& complement, int& ext_leng
 			}
 		}
 
+		for(it = split.begin(); it != split.end(); it++){
+			cout<<"TAM Length: "<<it->first<<endl;
+			for(int i = 0; i < it->second.size(); i++)
+				cout<<it->second[i]<<" ";
+			cout<<endl;
+		}
+			
+
 		int i = 0, begin = -1, end = -1;
 		map<int, int> tmp_range;
 		map<int, int>::iterator tmp_it, tmp_it_2;
 		map<int, map<int, Interval*> >::iterator it_int_1;
 		map<int, Interval*>::iterator it_int_2;
-
+		
 		it = split.begin();
 		while(i != core->getCoreTW()){
 			for(int j = 0; j < (int)it->second.size(); j++){

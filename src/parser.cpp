@@ -254,6 +254,16 @@ void TAMwidthAssign()
 	}
 	cout<<"TAM_1: "<<tot_1/sys.getSysTW()<<endl;
 	cout<<"TAM avg: "<<sys.getTAMAvg()<<endl;
+
+
+
+	for(i = 0; i < sys.core.size(); i++){
+		cout<<"Core Name: "<<sys.core[i]->getName()<<endl;
+		cout<<"Core Bit: "<<sys.core[i]->getCoreTW()<<endl;
+		for(int j = 0; j < sys.core[i]->getTAMRange().size(); j++){
+			cout<<"["<<sys.core[i]->getTAMRange()[j].first<<", "<<sys.core[i]->getTAMRange()[j].second<<"]"<<endl;
+		}
+	}
 }
 
 

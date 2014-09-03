@@ -78,6 +78,7 @@ class Core{
 		Core* getSameExtLength(){return same_ext_length;};
 		bool getDone(){return done;};
 		int initTAM(){return TAM_range.size();};
+		vector<pair<int, int> >& getTAMRange(){return TAM_range;};
 
 		map<string, External*> ext_list;
 		map<string, BIST*> bist_list;
