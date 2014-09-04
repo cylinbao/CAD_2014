@@ -1,7 +1,9 @@
 #include "core.h"
 #include "stdio.h"
+#include <iostream>
 
-#define debug1
+//#define debug1
+//#define debug2
 
 void System::fillTest()
 {
@@ -31,12 +33,23 @@ void System::fillTest()
 			pExt->getExecTime()->push_back(timePair);
 
 			TAMStat.insertInterval(pExt);
+			pExt->setDone();		
 			
+			#ifdef debug2
+			pExt->printInfo();
+			#endif
 			count++;
 		}
 		else {
 			TAMStat.deleteTop();
 		}
+		#ifdef debug2
+		char stop;
+		//TAMStat.printTAM();
+		cin >> stop;
+		#endif
+
+		TAMStat.computeTotPower();
 	}
 }
 
@@ -52,14 +65,14 @@ vector<External*> System::possibleExternal(TAMInterval *pTAMInterval)
 		pExt = itExt->second;	
 		// check this test done or not
 		if(pExt->checkDone())
-			break;
+			continue;
 		// check if all precedence done	
 		if(!pExt->checkPreDone())
-			break;
+			continue;
 		// check power will not exceed limit	
 		int extPower = pExt->getPower();
-		if((extPower + TAMStat.totPower) > tot_power)
-			break;
+		if((extPower + TAMStat.totPower - pTAMInterval->power) > tot_power)
+			continue;
 
 		TAM_range_size = pExt->getCore()->getTAM_range().size();
 		if(TAM_range_size == 1) {

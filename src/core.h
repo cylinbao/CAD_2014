@@ -42,6 +42,8 @@ class TAMContainer {
     void printTAM();
 		void insertInterval(External* pExt);
 		void deleteTop();
+		void computeTotPower();
+		vector<TAMInterval*> getTopIntvWithSameTime();
 
     priority_queue<TAMInterval*, vector<TAMInterval*>, cmp_TAM> pqTAM;
 		int totPower;
@@ -64,6 +66,8 @@ class System{
 		int getSysTW(){return tot_TAM_width;};
 
 		void fillTest();
+		void printExtList();
+
 		vector<External*> possibleExternal(TAMInterval *pTAMInterval);
 		vector<BIST*> possibleBIST();
 
@@ -123,6 +127,8 @@ class Core{
 
 		int initTAM(){return TAM_range.size();};
 
+		void printTAM_range();
+
 		map<string, External*> ext_list;
 		map<string, BIST*> bist_list;
 	private: 
@@ -151,10 +157,13 @@ class Test{
 		string getName(){return name;};
 		int getPower(){return power;};
 		int getLength(){return length;};
-		bool checkDone(){return done;};
-		bool checkPreDone();
 		vector<Test*>* getPre(){return &pre;};
 		vector< pair<int, int> >* getExecTime(){return &execTime;};
+
+		bool checkDone(){return done;};
+		bool checkPreDone();
+
+		void setDone(){done = true;};
 	private: 
 		Core* core;
 		string name;
@@ -173,6 +182,8 @@ class External: public Test{
 		void setPartition(int partition){this->partition = partition;};
 
 		int getPartition(){return partition;};
+
+		void printInfo();
 	private: 
 		int partition;
 		
