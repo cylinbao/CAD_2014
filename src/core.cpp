@@ -2,6 +2,7 @@
 #include "stdio.h"
 
 //#define debug1
+//#define debug2
 
 void System::printTAMAssignment()
 {
@@ -29,6 +30,7 @@ void System::printExtList()
 
 	for(it = ext_list.begin(); it != ext_list.end(); it++) {
 		printf("External %s ", it->second->getName().c_str());
+		printf("Power %d ", it->second->getPower());
 		tempExecTime = it->second->getExecTime();
 		for(i = 0; i < (int)tempExecTime->size(); i++) {
 			first = (*tempExecTime)[i].first;
@@ -42,11 +44,12 @@ void System::printExtList()
 	}
 }
 
-TAMInterval::TAMInterval(int front, int back, int timeStat, int energy,
+TAMInterval::TAMInterval(int front, int back, int time1, int time2, int energy,
 													 External *p_External){
 	TAMBegin = front;
 	TAMEnd = back;
-	time = timeStat;
+	timeBegin = time1;
+	timeEnd = time2;
 	power = energy;
 	width = TAMBegin - TAMEnd;
 	occupyExternal = p_External;
@@ -57,19 +60,24 @@ void TAMContainer::initTAM(int tot_TAM_width) {
 		pqTAM.pop();
 	TAMInterval *pTAMInterval = new TAMInterval(tot_TAM_width);
 	pqTAM.push(pTAMInterval);
+	//powerStat[0] = 0;
 }
 
 void TAMContainer::printTAM() {
 	cout << "\nThis is info about TAM!\n";
 	TAMInterval *pTAM;
 	priority_queue<TAMInterval*, vector<TAMInterval*>, cmp_TAM> tempTAM;
+	int count=0;
 
 	tempTAM = pqTAM;
 	while(!tempTAM.empty()) {
 		pTAM = tempTAM.top();	
 		tempTAM.pop();
-
-		printf("Time for this state: %d\n", pTAM->time);
+		
+		count += 1;
+		printf("%d.\n", count);
+		printf("Time start for this state: %d\n", pTAM->timeBegin);
+		printf("Time end for this state: %d\n", pTAM->timeEnd);
 		printf("Range: %d ~ %d\n", pTAM->TAMBegin, pTAM->TAMEnd);
 		printf("Power used by this test: %d\n", pTAM->power);
 		if(pTAM->occupyExternal != NULL)
@@ -78,6 +86,17 @@ void TAMContainer::printTAM() {
 			printf("External test name: This TAM interval is not used!\n");
 	}
 }
+
+void TAMContainer::printPowerStat()
+{
+	map<int ,int>::iterator powerIt;
+
+	printf("\nThis is power state!\n");
+	for(powerIt = powerStat.begin(); powerIt != powerStat.end(); powerIt++) {
+		printf("Time: %d, Power: %d\n", powerIt->first, powerIt->second);	
+	}
+}
+
 ///*
 void TAMContainer::insertInterval(External *pExt)
 {
@@ -99,21 +118,21 @@ void TAMContainer::insertInterval(External *pExt)
 			{
 				// conform the conditions, insert it
 				newTAMInterval = new TAMInterval(TAM_range[i].first, TAM_range[i].second, 
-																				(pTAMInterval->time)+(pExt->getLength()), 
-																				 pExt->getPower(), pExt);
+																				 pTAMInterval->timeEnd, (pTAMInterval->timeEnd)
+																				 +(pExt->getLength()), pExt->getPower(), pExt);
 				pqTAM.push(newTAMInterval);
 
 				if(TAM_range[i].first > pTAMInterval->TAMBegin) {
 					newTAMInterval = new TAMInterval(pTAMInterval->TAMBegin, (TAM_range[i].first-1), 
-																					 pTAMInterval->time, pTAMInterval->power,
-																					 pTAMInterval->occupyExternal);
+																					 pTAMInterval->timeBegin, pTAMInterval->timeEnd, 
+																					 pTAMInterval->power, pTAMInterval->occupyExternal);
 					pqTAM.push(newTAMInterval);
 				}
 
 				if(TAM_range[i].second < pTAMInterval->TAMEnd) {
 					newTAMInterval = new TAMInterval((TAM_range[i].second+1), pTAMInterval->TAMEnd,
-																					 pTAMInterval->time, pTAMInterval->power,
-																					 pTAMInterval->occupyExternal);
+																					 pTAMInterval->timeBegin, pTAMInterval->timeEnd,
+																					 pTAMInterval->power, pTAMInterval->occupyExternal);
 					pqTAM.push(newTAMInterval);
 				}
 			}
@@ -121,12 +140,14 @@ void TAMContainer::insertInterval(External *pExt)
 				storeTAMIntv.push_back(pTAMInterval);
 			}
 
-			if((pqTAM.empty()) || (pqTAM.top()->time != pTAMInterval->time)) {
+			if((pqTAM.empty()) || (pqTAM.top()->timeEnd != pTAMInterval->timeEnd)) {
 				for(j = 0; j < (int)storeTAMIntv.size(); j++) {
 					pqTAM.push(storeTAMIntv[j]);	
 				}
 				#ifdef debug1
 				printTAM();
+				char stop;
+				cin >> stop;
 				#endif
 				break;
 			}
@@ -143,7 +164,7 @@ void TAMContainer::deleteTop()
 
 	pTAMInterval1 = pqTAM.top();
 	pqTAM.pop();
-	while((!pqTAM.empty()) && (pqTAM.top()->time == pTAMInterval1->time)) {
+	while((!pqTAM.empty()) && (pqTAM.top()->timeEnd == pTAMInterval1->timeEnd)) {
 		if((pTAMInterval1->TAMEnd+1 != pqTAM.top()->TAMBegin) && 
 				(pqTAM.top()->TAMEnd+1 != pTAMInterval1->TAMBegin)) 
 		{
@@ -159,21 +180,22 @@ void TAMContainer::deleteTop()
 
 	if(pTAMInterval1->TAMEnd+1 == pTAMInterval2->TAMBegin) {
 		newTAMInterval = new TAMInterval(pTAMInterval1->TAMBegin, pTAMInterval2->TAMEnd,
-																		 pTAMInterval2->time, pTAMInterval2->power,
-																		 pTAMInterval2->occupyExternal);
+																		 pTAMInterval2->timeBegin, pTAMInterval2->timeEnd,
+																		 pTAMInterval2->power, pTAMInterval2->occupyExternal);
 		pqTAM.pop();
 		pqTAM.push(newTAMInterval);
 	}
 	else if(pTAMInterval2->TAMEnd+1 == pTAMInterval1->TAMBegin) {
 		newTAMInterval = new TAMInterval(pTAMInterval2->TAMBegin, pTAMInterval1->TAMEnd,
-																		 pTAMInterval2->time, pTAMInterval2->power,
-																		 pTAMInterval2->occupyExternal);
+																		 pTAMInterval2->timeBegin, pTAMInterval2->timeEnd,
+																		 pTAMInterval2->power, pTAMInterval2->occupyExternal);
 		pqTAM.pop();
 		pqTAM.push(newTAMInterval);
 	}
 	else {
 		newTAMInterval = new TAMInterval(pTAMInterval1->TAMBegin, pTAMInterval1->TAMEnd,
-																		 pTAMInterval2->time, 0, NULL);
+																		 pTAMInterval2->timeBegin, pTAMInterval2->timeEnd,
+																		 0, NULL);
 		pqTAM.push(newTAMInterval);
 	}
 
@@ -183,32 +205,82 @@ void TAMContainer::deleteTop()
 
 	#ifdef debug1
 	printTAM();
+	char stop;
+	cin >> stop;
 	#endif
 }
 
-void TAMContainer::computeTotPower()
+void TAMContainer::computePower(External *pExt, map<string, External*>* pDoneList)
 {
-	priority_queue<TAMInterval*, vector<TAMInterval*>, cmp_TAM> tempPqTAM;
-	map<string, External*> computedExt;
-	TAMInterval *pTAMInterval;
+	map<int ,int>::iterator powerIt;	
+	map<string, External*>::iterator doneIt;
 	int count;
 
-	tempPqTAM = pqTAM;
-	count = 0;
-
-	while(!tempPqTAM.empty()) {
-		pTAMInterval = tempPqTAM.top();
-		tempPqTAM.pop();
-
-		if((pTAMInterval->occupyExternal != NULL) && 
-			 (computedExt.find(pTAMInterval->occupyExternal->getName()) == computedExt.end())) 
+	for(powerIt = powerStat.begin(); powerIt != powerStat.end(); powerIt++) {
+		if((powerIt->first <= pExt->getExecTime()->back().second) && 
+				(powerIt->first > pExt->getExecTime()->back().first))
 		{
-			count += pTAMInterval->power;
-			computedExt[pTAMInterval->occupyExternal->getName()] = pTAMInterval->occupyExternal;
+			powerIt->second += pExt->getPower();
 		}
 	}
 
-	totPower = count;
+	if(powerStat.find(pExt->getExecTime()->back().second) == powerStat.end()) {
+		count = 0;
+		for(doneIt = pDoneList->begin(); doneIt != pDoneList->end(); doneIt++) {
+			if((pExt->getExecTime()->back().second > doneIt->second->getExecTime()->back().first) && 
+				 (pExt->getExecTime()->back().second <= doneIt->second->getExecTime()->back().second))
+			{
+				count += doneIt->second->getPower();
+			}
+		}
+		powerStat[pExt->getExecTime()->back().second] = count + pExt->getPower();
+	}
+	#ifdef debug2
+	printPowerStat();
+	#endif
+}
+
+bool TAMContainer::checkPower(TAMInterval *pTAMInterval, External *pExt, BIST *pBist, int limit, 
+															map<string, External*>* pDoneExtList, map<string, BIST*>* pDoneBistList)
+{
+	map<string, External*>::iterator doneItExt;
+	map<string, BIST*>::iterator doneItBist;
+	bool flag;
+	int timeBegin, timeEnd, count;
+
+	count = 0;
+	timeBegin = pTAMInterval->timeEnd;
+	timeEnd = timeBegin + pExt->getLength();
+
+	for(doneItExt = pDoneExtList->begin(); doneItExt != pDoneExtList->end(); doneItExt++) {
+		if((timeEnd <= doneItExt->second->getExecTime()->back().first) ||
+			 (timeBegin >= doneItExt->second->getExecTime()->back().second))
+		{
+		}
+		else
+			count += doneItExt->second->getPower();
+	}
+
+	for(doneItBist = pDoneBistList->begin(); doneItBist != pDoneBistList->end(); doneItBist++) {
+		if((timeEnd <= doneItBist->second->getExecTime()->back().first) ||
+			 (timeBegin >= doneItBist->second->getExecTime()->back().second))
+		{
+		}
+		else
+			count += doneItBist->second->getPower();
+	}
+
+	flag = true;
+	if((pExt != NULL) && (pBist == NULL)) {
+		if((count + pExt->getPower()) > limit)
+			flag = false;
+	}
+	else if((pExt == NULL) && (pBist != NULL)) {
+		if((count + pBist->getPower()) > limit)
+			flag = false;
+	}
+
+	return flag;
 }
 
 vector<TAMInterval*> TAMContainer::getTopIntvWithSameTime()
@@ -223,7 +295,7 @@ vector<TAMInterval*> TAMContainer::getTopIntvWithSameTime()
 	tempPqTAM.pop();
 	// store those intervals which have the same time
 	while((!tempPqTAM.empty()) && 
-				(tempPqTAM.top()->time == pTAMInterval->time))
+				(tempPqTAM.top()->timeEnd == pTAMInterval->timeEnd))
 	{
 		pTAMInterval = tempPqTAM.top();
 		storeTAMIntv.push_back(pTAMInterval);
@@ -256,6 +328,7 @@ void External::printInfo()
 	cout << "Power: " << getPower() << endl;
 	cout << "Length: " << getLength() << endl;
 	cout << "Belong to Core: " << getCore()->getName() << endl;
+	printf("Interval: (%d,%d)\n", getExecTime()->back().first, getExecTime()->back().second);
 	getCore()->printTAM_range();
 }
 

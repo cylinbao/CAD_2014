@@ -17,13 +17,14 @@ class Resource;
 
 class TAMInterval{
   public:
-    TAMInterval(int tot_TAM_width){ TAMBegin=0; TAMEnd=tot_TAM_width-1; time=0;
-                                     power=0; width=TAMEnd; occupyExternal=NULL;}
-    TAMInterval(int front, int back, int timeStat, int energy,
+    TAMInterval(int tot_TAM_width){ TAMBegin=0; TAMEnd=tot_TAM_width-1; timeBegin=0;
+                                    timeEnd=0; power=0; width=TAMEnd; occupyExternal=NULL;}
+    TAMInterval(int front, int back, int time1, int time2, int energy,
                  External *p_External);
     int TAMBegin;
     int TAMEnd;
-    int time;
+    int timeBegin;
+		int timeEnd;
     int power;
     int width;
     External *occupyExternal;
@@ -32,7 +33,7 @@ class TAMInterval{
 class cmp_TAM {
   public:
     bool operator()(TAMInterval* lhs, TAMInterval* rhs) {
-      return lhs->time > rhs->time;
+      return lhs->timeEnd > rhs->timeEnd;
     }
 };
 
@@ -40,13 +41,17 @@ class TAMContainer {
   public:
     void initTAM(int tot_TAM_width);
     void printTAM();
+		void printPowerStat();
 		void insertInterval(External* pExt);
+		void insertBist(BIST* pBist);
 		void deleteTop();
-		void computeTotPower();
+		void computePower(External *pExt, map<string, External*>* pDoneList);
+		bool checkPower(TAMInterval *pTAMInterval, External *pExt, BIST *pBist, int limit, 
+									 	map<string, External*>* pDoneExtList, map<string, BIST*>* pDoneBistList);
 		vector<TAMInterval*> getTopIntvWithSameTime();
 
     priority_queue<TAMInterval*, vector<TAMInterval*>, cmp_TAM> pqTAM;
-		int totPower;
+		map<int ,int> powerStat; // use time as key, power as value
 };
 
 class System{
@@ -56,6 +61,7 @@ class System{
 		void setSysPower(int power){tot_power = power;};
 		void setSysTW(int TAM_width){tot_TAM_width = TAM_width;};
 		void setWaitExtList(){wait_ext_list = ext_list;};
+		void setWaitBistList(){wait_bist_list = bist_list;};
 		void setTAMAvg(int avg){this->avg = avg;};
 		void initTAM(){TAM = new int[tot_TAM_width];for(int i = 0; i < tot_TAM_width; i++)TAM[i] = 0;};
 		void modTAM(int begin, int end, int val){for(int i = begin; i <= end; i++)TAM[i]+=val;};
@@ -69,13 +75,16 @@ class System{
 		void printExtList();
 
 		vector<External*> possibleExternal(TAMInterval *pTAMInterval);
-		vector<BIST*> possibleBIST();
+		vector<BIST*> possibleBIST(TAMInterval *pTAMInterval);
 
 		vector<Core*> core;
 		map<string, Test*> tot_list;
 		map<string, External*> ext_list;
 		map<string, External*> wait_ext_list;
+		map<string, External*> done_ext_list;
 		map<string, BIST*> bist_list;
+		map<string, BIST*> wait_bist_list;
+		map<string, BIST*> done_bist_list;
 		map<string, Resource*> res_list;
 		TAMContainer TAMStat;
 
@@ -88,7 +97,7 @@ class System{
 
 class Resource{
 	public:
-		Resource(){name == ""; usable = true;};
+		Resource(){name == ""; usable = true; time=0;};
 
 		void setName(string name){this->name = name;};
 		void setTure(){usable = true;};
@@ -99,6 +108,7 @@ class Resource{
 	private:
 		string name;
 		bool usable;
+		int time;
 };
 
 class Core{
