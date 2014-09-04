@@ -43,9 +43,10 @@ class TAMContainer {
     void printTAM();
 		void printPowerStat();
 		void insertInterval(External* pExt);
-		void insertBist(BIST* pBist);
+		void insertBist(BIST* pBist, map<string, Resource*>* p_res_list);
 		void deleteTop();
-		void computePower(External *pExt, map<string, External*>* pDoneList);
+		void computePower(External *pExt, map<string, External*>* pDoneExtList, 
+											BIST *pBist, map<string, BIST*>* pDoneBistList);
 		bool checkPower(TAMInterval *pTAMInterval, External *pExt, BIST *pBist, int limit, 
 									 	map<string, External*>* pDoneExtList, map<string, BIST*>* pDoneBistList);
 		vector<TAMInterval*> getTopIntvWithSameTime();
@@ -65,14 +66,17 @@ class System{
 		void setTAMAvg(int avg){this->avg = avg;};
 		void initTAM(){TAM = new int[tot_TAM_width];for(int i = 0; i < tot_TAM_width; i++)TAM[i] = 0;};
 		void modTAM(int begin, int end, int val){for(int i = begin; i <= end; i++)TAM[i]+=val;};
-		void printTAMAssignment();
 
 		int getTAMAvg(){return avg;};
 		int getSysPower(){return tot_power;};
 		int getSysTW(){return tot_TAM_width;};
 
 		void fillTest();
+		void printTAMAssignment();
+		void printTest();
 		void printExtList();
+		void printBistList();
+		void printResult();
 
 		vector<External*> possibleExternal(TAMInterval *pTAMInterval);
 		vector<BIST*> possibleBIST(TAMInterval *pTAMInterval);
@@ -102,9 +106,11 @@ class Resource{
 		void setName(string name){this->name = name;};
 		void setTure(){usable = true;};
 		void setFalse(){usable = false;};
+		void setTime(int number){time = number;};
 
 		string getName(){return name;};
 		bool getUsable(){return usable;};
+		int getTime(){return time;};
 	private:
 		string name;
 		bool usable;

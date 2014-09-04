@@ -4,20 +4,63 @@
 //#define debug1
 //#define debug2
 
+void System::printResult()
+{
+	printTAMAssignment();
+	printTest();
+}
+
 void System::printTAMAssignment()
 {
 	int i, j, first, second;
 	vector<pair<int, int> >  range;
 
 	for(i=0; i<(int)core.size(); i++) {
-		cout << "Core name: " << core[i]->getName() << endl;
+		cout << "\nTAM_assignment " << core[i]->getName();
 		range = core[i]->getTAM_range();
 
 		for(j=0; j<(int)range.size(); j++) {
 			first = range[j].first;	
 			second = range[j].second;	
 
-			cout << j << ". [" << first << ", " << second << "]\n";
+			cout << " [" << first << ":" << second << "]";
+		}
+		cout << endl;
+	}
+}
+
+void System::printTest()
+{
+	map<string, External*>::iterator itExt;
+	map<string, BIST*>::iterator itBist;
+	Core *pCore;
+	int i, j, first, second;
+	vector< pair<int, int> > *tempExecTime;
+
+	for(i=0; i<(int)core.size(); i++) {
+		pCore = core[i];
+		for(itExt = pCore->ext_list.begin(); itExt != pCore->ext_list.end(); itExt++) {
+			printf("\nExternal %s %s", pCore->getName().c_str(), itExt->second->getName().c_str());
+			tempExecTime = itExt->second->getExecTime();
+			for(j = 0; j < (int)tempExecTime->size(); j++) {
+				first = (*tempExecTime)[j].first;
+				second = (*tempExecTime)[j].second;
+
+				printf(" (%d,%d)", first, second);
+			}
+			printf("\n");
+		}
+
+		for(itBist = pCore->bist_list.begin(); itBist != pCore->bist_list.end(); itBist++) {
+			printf("\nBIST %s %s", pCore->getName().c_str(), itBist->second->getName().c_str());
+			tempExecTime = itBist->second->getExecTime();
+			for(j = 0; j < (int)tempExecTime->size(); j++) {
+				first = (*tempExecTime)[j].first;
+				second = (*tempExecTime)[j].second;
+
+				printf(" (%d,%d)", first, second);
+			}
+			printf("\n");
 		}
 	}
 }
@@ -28,8 +71,32 @@ void System::printExtList()
 	vector< pair<int, int> >* tempExecTime;
 	int i, first, second;
 
+	printf("\nTotal state of External Test List\n");
 	for(it = ext_list.begin(); it != ext_list.end(); it++) {
 		printf("External %s ", it->second->getName().c_str());
+		printf("Power %d ", it->second->getPower());
+		tempExecTime = it->second->getExecTime();
+		for(i = 0; i < (int)tempExecTime->size(); i++) {
+			first = (*tempExecTime)[i].first;
+			second = (*tempExecTime)[i].second;
+
+			if(i != (int)tempExecTime->size()-1)
+				printf("(%d,%d) ", first, second);
+			else
+				printf("(%d,%d)\n", first, second);
+		}
+	}
+}
+
+void System::printBistList()
+{
+	map<string, BIST*>::iterator it;
+	vector< pair<int, int> >* tempExecTime;
+	int i, first, second;
+
+	printf("\nTotal state of BIST Test List\n");
+	for(it = bist_list.begin(); it != bist_list.end(); it++) {
+		printf("BIST %s ", it->second->getName().c_str());
 		printf("Power %d ", it->second->getPower());
 		tempExecTime = it->second->getExecTime();
 		for(i = 0; i < (int)tempExecTime->size(); i++) {
@@ -156,6 +223,13 @@ void TAMContainer::insertInterval(External *pExt)
 }
 //*/
 
+void TAMContainer::insertBist(BIST *pBist, map<string, Resource*>* p_res_list)
+{
+	if(pBist->getRes() != "") {
+		(*p_res_list)[pBist->getRes()]->setTime(pBist->getExecTime()->back().second);
+	}
+}
+
 void TAMContainer::deleteTop()
 {
 	TAMInterval *pTAMInterval1, *pTAMInterval2, *newTAMInterval;
@@ -210,31 +284,75 @@ void TAMContainer::deleteTop()
 	#endif
 }
 
-void TAMContainer::computePower(External *pExt, map<string, External*>* pDoneList)
+void TAMContainer::computePower(External *pExt, map<string, External*>* pDoneExtList,
+																BIST *pBist, map<string, BIST*>* pDoneBistList)
 {
 	map<int ,int>::iterator powerIt;	
-	map<string, External*>::iterator doneIt;
+	map<string, External*>::iterator doneItExt;
+	map<string, BIST*>::iterator doneItBist;
 	int count;
 
-	for(powerIt = powerStat.begin(); powerIt != powerStat.end(); powerIt++) {
-		if((powerIt->first <= pExt->getExecTime()->back().second) && 
-				(powerIt->first > pExt->getExecTime()->back().first))
-		{
-			powerIt->second += pExt->getPower();
+	if(pExt != NULL) {
+		for(powerIt = powerStat.begin(); powerIt != powerStat.end(); powerIt++) {
+			if((powerIt->first <= pExt->getExecTime()->back().second) && 
+					(powerIt->first > pExt->getExecTime()->back().first))
+			{
+				powerIt->second += pExt->getPower();
+			}
+		}
+
+		if(powerStat.find(pExt->getExecTime()->back().second) == powerStat.end()) {
+			count = 0;
+			for(doneItExt = pDoneExtList->begin(); doneItExt != pDoneExtList->end(); doneItExt++) {
+				if((pExt->getExecTime()->back().second > doneItExt->second->getExecTime()->back().first) && 
+						(pExt->getExecTime()->back().second <= doneItExt->second->getExecTime()->back().second))
+				{
+					count += doneItExt->second->getPower();
+				}
+			}
+
+			for(doneItBist = pDoneBistList->begin(); doneItBist != pDoneBistList->end(); doneItBist++) {
+				if((pExt->getExecTime()->back().second > doneItBist->second->getExecTime()->back().first) && 
+						(pExt->getExecTime()->back().second <= doneItBist->second->getExecTime()->back().second))
+				{
+					count += doneItBist->second->getPower();
+				}
+			}
+
+			powerStat[pExt->getExecTime()->back().second] = count + pExt->getPower();
+		}
+	}
+	else if(pBist != NULL) {
+		for(powerIt = powerStat.begin(); powerIt != powerStat.end(); powerIt++) {
+			if((powerIt->first <= pBist->getExecTime()->back().second) && 
+					(powerIt->first > pBist->getExecTime()->back().first))
+			{
+				powerIt->second += pBist->getPower();
+			}
+		}
+
+		if(powerStat.find(pBist->getExecTime()->back().second) == powerStat.end()) {
+			count = 0;
+			for(doneItExt = pDoneExtList->begin(); doneItExt != pDoneExtList->end(); doneItExt++) {
+				if((pBist->getExecTime()->back().second > doneItExt->second->getExecTime()->back().first) && 
+						(pBist->getExecTime()->back().second <= doneItExt->second->getExecTime()->back().second))
+				{
+					count += doneItExt->second->getPower();
+				}
+			}
+
+			for(doneItBist = pDoneBistList->begin(); doneItBist != pDoneBistList->end(); doneItBist++) {
+				if((pBist->getExecTime()->back().second > doneItBist->second->getExecTime()->back().first) && 
+						(pBist->getExecTime()->back().second <= doneItBist->second->getExecTime()->back().second))
+				{
+					count += doneItBist->second->getPower();
+				}
+			}
+
+			powerStat[pBist->getExecTime()->back().second] = count + pBist->getPower();
 		}
 	}
 
-	if(powerStat.find(pExt->getExecTime()->back().second) == powerStat.end()) {
-		count = 0;
-		for(doneIt = pDoneList->begin(); doneIt != pDoneList->end(); doneIt++) {
-			if((pExt->getExecTime()->back().second > doneIt->second->getExecTime()->back().first) && 
-				 (pExt->getExecTime()->back().second <= doneIt->second->getExecTime()->back().second))
-			{
-				count += doneIt->second->getPower();
-			}
-		}
-		powerStat[pExt->getExecTime()->back().second] = count + pExt->getPower();
-	}
 	#ifdef debug2
 	printPowerStat();
 	#endif
@@ -250,7 +368,10 @@ bool TAMContainer::checkPower(TAMInterval *pTAMInterval, External *pExt, BIST *p
 
 	count = 0;
 	timeBegin = pTAMInterval->timeEnd;
-	timeEnd = timeBegin + pExt->getLength();
+	if((pExt != NULL) && (pBist == NULL)) 
+		timeEnd = timeBegin + pExt->getLength();
+	else if((pExt == NULL) && (pBist != NULL)) 
+		timeEnd = timeBegin + pBist->getLength();
 
 	for(doneItExt = pDoneExtList->begin(); doneItExt != pDoneExtList->end(); doneItExt++) {
 		if((timeEnd <= doneItExt->second->getExecTime()->back().first) ||

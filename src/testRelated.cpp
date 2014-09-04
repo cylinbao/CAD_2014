@@ -28,7 +28,7 @@ void System::fillTest()
 		int vecSize = vecExternal.size();
 		printf("\nvecExternal size = %d\n", vecSize);
 		#endif
-
+		// for external
 		if(!vecExternal.empty()) {
 			pExt = vecExternal[0];// Only get the first one in this version
 			wait_ext_list.erase( pExt->getName());// delete it from wait list
@@ -43,7 +43,7 @@ void System::fillTest()
 			TAMStat.insertInterval(pExt);
 			pExt->setDone();		
 			
-			TAMStat.computePower(pExt, &done_ext_list);
+			TAMStat.computePower(pExt, &done_ext_list, NULL, &done_bist_list);
 			done_ext_list[pExt->getName()] = pExt;
 			countExt++;
 		}
@@ -54,7 +54,7 @@ void System::fillTest()
 		char stop;
 		cin >> stop;
 		#endif
-
+		// for BIST
 		vecBist = possibleBIST(pTAMInterval);
 		#ifdef debug1
 		int vecSize = vecBist.size();
@@ -62,12 +62,24 @@ void System::fillTest()
 		#endif
 		if(!vecBist.empty()) {
 			pBist = vecBist[0];
+			wait_bist_list.erase( pBist->getName());// delete it from wait list
 
-			TAMStat.insertBist(pBist);
+			intvTime = pTAMInterval->timeEnd;
+			timePair = make_pair(intvTime, intvTime+pBist->getLength());
+			pBist->getExecTime()->push_back(timePair);
+			#ifdef debug3
+			pBist->printInfo();
+			#endif
+
+			TAMStat.insertBist(pBist, &res_list);
 			pBist->setDone();
+
+			TAMStat.computePower(NULL, &done_ext_list, pBist, &done_bist_list);
+			done_bist_list[pBist->getName()] = pBist;
+			countBist++;
 		}
 		else{
-
+			TAMStat.deleteTop();
 		}
 	}
 }
@@ -148,12 +160,52 @@ vector<External*> System::possibleExternal(TAMInterval *pTAMInterval)
 
 vector<BIST*> System::possibleBIST(TAMInterval *pTAMInterval)
 {
-  vector<BIST*> vecBIST;
+  vector<BIST*> vecBist;
 	map<string, BIST*>::iterator itBist;
+	map<string, External*>::iterator itExt;
+	BIST *pBist;
+	bool flag;
 	
 	for(itBist = wait_bist_list.begin(); itBist != wait_bist_list.end(); itBist++) {
+		pBist = itBist->second;
 
+		// check this test done or not
+    if(pBist->checkDone())
+      continue;
+    // check if all precedence done
+    if(!pBist->checkPreDone())
+      continue;
+		// check resource is useable or not
+		if(pBist->getRes() != "") {
+			if(res_list[itBist->second->getRes()]->getTime() > pTAMInterval->timeEnd)
+				continue;
+		}
+    // check power will not exceed limit
+    if(!TAMStat.checkPower(pTAMInterval, NULL, pBist, tot_power, &done_ext_list, &done_bist_list))
+      continue;
+		
+		flag = true;
+		int timeBegin = pTAMInterval->timeEnd;
+		int timeEnd = timeBegin + pBist->getLength();
+
+		for(itExt = itBist->second->getCore()->ext_list.begin(); 
+				itExt != itBist->second->getCore()->ext_list.end(); itExt++)
+		{
+			if(itExt->second->checkDone()) {
+				if((timeEnd <= itExt->second->getExecTime()->back().first) ||
+						(timeBegin >= itExt->second->getExecTime()->back().second))
+				{
+				}
+				else {
+					flag = false;
+					break;
+				}
+			}
+		}	
+
+		if(flag == true)
+			vecBist.push_back(pBist);
 	}
 
-  return vecBIST;
+  return vecBist;
 }
