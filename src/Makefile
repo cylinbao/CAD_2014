@@ -9,8 +9,8 @@ TARGET = execute
 all:
 	${CC} ${SOURCE} ${LIB} -o ${TARGET}
 
-run1:
-	./${TARGET} ../benchmark/bench_1.info
+run:
+	cp ${TARGET} ../benchmark/
 
 clean:
 	rm -rf ${TARGET}

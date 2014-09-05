@@ -72,11 +72,12 @@ class System{
 		int getSysTW(){return tot_TAM_width;};
 
 		void fillTest();
-		void printTAMAssignment();
-		void printTest();
+		void printTAMAssignment(FILE *pfile);
+		void printTest(FILE *pFile);
 		void printExtList();
 		void printBistList();
-		void printResult();
+		void printTestTime(FILE *pFile);
+		void printResult(char *str);
 
 		vector<External*> possibleExternal(TAMInterval *pTAMInterval);
 		vector<BIST*> possibleBIST(TAMInterval *pTAMInterval);

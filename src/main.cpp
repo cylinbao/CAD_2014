@@ -25,9 +25,9 @@ int main(int argc, char** argv)
 	printf("Wiat External List Size: %lu\n", sys.wait_ext_list.size());
 	#endif
 	sys.fillTest(); //test this function
+	sys.printResult(argv[1]);
 	#ifdef debug2
 	//printf("Power Limit: %d\n", sys.getSysPower());
-	sys.printResult();
 	//sys.printTAMAssignment();
 	//sys.printTest();
 	//sys.printExtList();

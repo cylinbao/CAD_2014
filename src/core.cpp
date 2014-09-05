@@ -1,35 +1,64 @@
 #include "core.h"
 #include "stdio.h"
+#include "string.h"
 
 //#define debug1
 //#define debug2
+#define debug3
 
-void System::printResult()
+void System::printResult(char *str)
 {
-	printTAMAssignment();
-	printTest();
+	char *outName;
+	FILE *pFile;
+
+	#ifdef debug3
+	printf("original = %s\n", str);
+	#endif
+	outName = strtok(str,".");
+	strcat(outName, ".scheduling");
+	#ifdef debug3
+	printf("outName = %s\n", outName);
+	#endif
+	pFile = fopen(outName, "w");
+
+	fprintf(pFile, "Schedule\nbegin\n");
+	printTestTime(pFile);
+	printTAMAssignment(pFile);
+	printTest(pFile);
+	fprintf(pFile, "\nend");
 }
 
-void System::printTAMAssignment()
+void System::printTestTime(FILE *pFile)
+{
+	map<int ,int>::iterator it;
+	it = TAMStat.powerStat.end();
+	it--;
+	fprintf(pFile, "\n\tTest_time %d\n", it->first);
+}
+
+void System::printTAMAssignment(FILE *pFile)
 {
 	int i, j, first, second;
 	vector<pair<int, int> >  range;
 
 	for(i=0; i<(int)core.size(); i++) {
-		cout << "\nTAM_assignment " << core[i]->getName();
+		//cout << "\n\tTAM_assignment " << core[i]->getName();
+		fprintf(pFile, "\n\tTAM_assignment %s", core[i]->getName().c_str());
 		range = core[i]->getTAM_range();
 
 		for(j=0; j<(int)range.size(); j++) {
 			first = range[j].first;	
 			second = range[j].second;	
 
-			cout << " [" << first << ":" << second << "]";
+			//cout << " [" << first << ":" << second << "]";
+			fprintf(pFile, " [%d:%d]", first, second);
 		}
-		cout << endl;
+		//cout << endl;
+		fprintf(pFile, "\n");
 	}
 }
 
-void System::printTest()
+void System::printTest(FILE *pFile)
 {
 	map<string, External*>::iterator itExt;
 	map<string, BIST*>::iterator itBist;
@@ -40,27 +69,27 @@ void System::printTest()
 	for(i=0; i<(int)core.size(); i++) {
 		pCore = core[i];
 		for(itExt = pCore->ext_list.begin(); itExt != pCore->ext_list.end(); itExt++) {
-			printf("\nExternal %s %s", pCore->getName().c_str(), itExt->second->getName().c_str());
+			fprintf(pFile, "\n\tExternal %s %s", pCore->getName().c_str(), itExt->second->getName().c_str());
 			tempExecTime = itExt->second->getExecTime();
 			for(j = 0; j < (int)tempExecTime->size(); j++) {
 				first = (*tempExecTime)[j].first;
 				second = (*tempExecTime)[j].second;
 
-				printf(" (%d,%d)", first, second);
+				fprintf(pFile, " (%d,%d)", first, second-1);
 			}
-			printf("\n");
+			fprintf(pFile, "\n");
 		}
 
 		for(itBist = pCore->bist_list.begin(); itBist != pCore->bist_list.end(); itBist++) {
-			printf("\nBIST %s %s", pCore->getName().c_str(), itBist->second->getName().c_str());
+			fprintf(pFile, "\n\tBIST %s %s", pCore->getName().c_str(), itBist->second->getName().c_str());
 			tempExecTime = itBist->second->getExecTime();
 			for(j = 0; j < (int)tempExecTime->size(); j++) {
 				first = (*tempExecTime)[j].first;
 				second = (*tempExecTime)[j].second;
 
-				printf(" (%d,%d)", first, second);
+				fprintf(pFile, " (%d,%d)", first, second-1);
 			}
-			printf("\n");
+			fprintf(pFile, "\n");
 		}
 	}
 }
