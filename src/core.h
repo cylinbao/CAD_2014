@@ -44,7 +44,7 @@ class TAMContainer {
 		void printPowerStat();
 		void insertInterval(External* pExt);
 		void insertBist(BIST* pBist, map<string, Resource*>* p_res_list);
-		void deleteTop();
+		void deleteTop(map<string, BIST*> *done_bist_list);
 		void computePower(External *pExt, map<string, External*>* pDoneExtList, 
 											BIST *pBist, map<string, BIST*>* pDoneBistList);
 		bool checkPower(TAMInterval *pTAMInterval, External *pExt, BIST *pBist, int limit, 
@@ -195,12 +195,9 @@ class Test{
 class External: public Test{
 	public: 
 		External(){partition = 0;};
-
 		void setPartition(int partition){this->partition = partition;};
-
-		int getPartition(){return partition;};
-
 		void printInfo();
+		int getPartition(){return partition;};
 	private: 
 		int partition;
 		
@@ -209,9 +206,8 @@ class External: public Test{
 class BIST: public Test{
 	public:
 		BIST(){res = "";};
-
 		void setRes(string res){this->res = res;};
-
+		void printInfo();
 		string getRes(){return res;};
 	private:
 		string res;
