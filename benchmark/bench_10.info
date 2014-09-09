@@ -13,7 +13,7 @@ begin
     Precedence      test_100_3_5 > test_50_3_3
     Precedence      test_9_3_4 > test_4_3_3 > test_50_3_3
     Precedence      test_12_1_1 > test_12_3_7
-	Resourcnbsrc_1 bsrc_2 
+	Resource bsrc_1 bsrc_2 
 end
 
 
