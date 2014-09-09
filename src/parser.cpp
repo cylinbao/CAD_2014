@@ -181,7 +181,14 @@ void setPrecedence()
 			sys.tot_list[pre[i][j + 1]]->addPre(sys.tot_list[pre[i][j]]);
 	}
 }
-
+struct cmp
+{
+        bool operator()(Core* l, Core* r)
+        {
+                return l->getExtLength() < r->getExtLength();
+        }
+};
+					
 void TAMwidthAssign()
 {
 	int i;
@@ -189,7 +196,8 @@ void TAMwidthAssign()
 	map<int, map<int, Core*> > set_core_list; // 1. TAM width 2. Length
 	map<int, map<int, Core*> >::iterator it_1;
 	map<int, Core*>::iterator it_2;
-	map<int, Core*> pre_arrange;
+//	map<int, Core*> pre_arrange;
+	priority_queue<Core*, vector<Core*>, cmp> pre_arrange;
 	Complement complement;
 
 	for(i = 0 ; i < (int)sys.core.size(); i++){
@@ -211,21 +219,22 @@ void TAMwidthAssign()
 				}
 				cout<<sys.core[i]->getExtLength()<<endl;
 			}
-			if(pre_arrange.find(sys.core[i]->getExtLength()) == pre_arrange.end()){
-				pre_arrange[sys.core[i]->getExtLength()] = sys.core[i];
-			}
+			pre_arrange.push(sys.core[i]);
+//			if(pre_arrange.find(sys.core[i]->getExtLength()) == pre_arrange.end()){
+//				pre_arrange[sys.core[i]->getExtLength()] = sys.core[i];
+//			}
 		}
 	}
 
 	cout<<"Previous Work Begin: "<<endl;
-	it_2 = pre_arrange.end();
-	for(it_2--;;it_2--){
-		if(it_2->first >= sys.getTAMAvg() / 5){
-			Core* core = it_2->second;
-			coreAssign(core, sys, complement);
+//	it_2 = pre_arrange.end();
+//	for(it_2--;;it_2--){
+	while(!pre_arrange.empty()){
+		if(pre_arrange.top()->getExtLength() >= sys.getTAMAvg() / 3){
+		Core* core = pre_arrange.top();
+		coreAssign(core, sys, complement);
 		}
-		if(it_2 == pre_arrange.begin())
-			break;
+		pre_arrange.pop();
 	}
 	cout<<"Previous Work End"<<endl;
 
