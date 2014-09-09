@@ -18,5 +18,8 @@ run1:
 run2:
 	./${TARGET} bench_2.info
 
+run3:
+	./${TARGET} bench_3.info
+
 clean:
 	rm -rf ${TARGET}

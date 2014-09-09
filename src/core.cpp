@@ -314,7 +314,7 @@ bool Test::checkPreDone(TAMInterval *pTAMInterval)
 			flag = false;
 			break;
 		}
-		else if(pre[i]->execTime.back().second < pTAMInterval->timeEnd) {
+		else if(pTAMInterval->timeEnd < pre[i]->execTime.back().second) {
 			flag = false;
 			break;
 		}

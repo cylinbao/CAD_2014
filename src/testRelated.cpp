@@ -3,7 +3,7 @@
 #include <iostream>
 
 #define debug1
-#define debug2
+//#define debug2
 
 void System::fillTest()
 {
@@ -192,6 +192,7 @@ vector<BIST*> System::possibleBIST(TAMInterval *pTAMInterval)
 {
   vector<BIST*> vecBist;
 	map<string, BIST*>::iterator itBist;
+	map<string, BIST*>::iterator itBist2;
 	map<string, External*>::iterator itExt;
 	BIST *pBist;
 	bool flag;
@@ -232,6 +233,23 @@ vector<BIST*> System::possibleBIST(TAMInterval *pTAMInterval)
 				}
 			}
 		}	
+
+		if(flag == true) {
+			for(itBist2 = itBist->second->getCore()->bist_list.begin(); 
+					itBist2 != itBist->second->getCore()->bist_list.end(); itBist2++)
+			{
+				if(itBist2->second->checkDone()) {
+					if((timeEnd <= itBist2->second->getExecTime()->back().first) ||
+							(timeBegin >= itBist2->second->getExecTime()->back().second))
+					{
+					}
+					else {
+						flag = false;
+						break;
+					}
+				}
+			}	
+		}
 
 		if(flag == true)
 			vecBist.push_back(pBist);
