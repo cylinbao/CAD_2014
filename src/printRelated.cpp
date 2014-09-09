@@ -204,3 +204,20 @@ void Core::printTAM_range()
 		cout << i << ". [" << first << ", " << second << "]\n";
 	}
 }
+
+void System::printPrecedence()
+{
+	map<string, Test*>::iterator it;
+	int i;
+	printf("\nThis is info about Precedence!\n");
+
+	for(it = tot_list.begin(); it != tot_list.end(); it++) {
+		if(it->second->getPre()->size() > 0) {
+			printf("Precedence\t");
+			for(i = 0; i < (int)it->second->getPre()->size(); i++) {
+				printf(" %s >", (*it->second->getPre())[i]->getName().c_str());
+			}
+			printf(" %s\n", it->first.c_str());
+		}
+	}
+}

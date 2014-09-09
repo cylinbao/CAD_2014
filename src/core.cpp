@@ -303,14 +303,18 @@ vector<TAMInterval*> TAMContainer::getTopIntvWithSameTime()
 	return storeTAMIntv;
 }
 
-bool Test::checkPreDone()
+bool Test::checkPreDone(TAMInterval *pTAMInterval)
 {
 	unsigned int i;
 	bool flag;
 
 	flag = true;
 	for(i=0; i<pre.size(); i++) {
-		if(!pre[i]->checkDone()) {
+		if(!pre[i]->checkDone()){
+			flag = false;
+			break;
+		}
+		else if(pre[i]->execTime.back().second < pTAMInterval->timeEnd) {
 			flag = false;
 			break;
 		}

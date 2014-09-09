@@ -16,6 +16,7 @@ int main(int argc, char** argv)
 	readInputFile(argv[1]);
 	setPrecedence();
 	TAMwidthAssign();
+	//sys.printPrecedence();
 	sys.setWaitExtList();
 	sys.setWaitBistList();
 	sys.TAMStat.initTAM(sys.getSysTW());
@@ -35,6 +36,5 @@ int main(int argc, char** argv)
 	sys.printBistList();
 	sys.TAMStat.printPowerStat();
 	#endif 
-	
 	return 0;
 }

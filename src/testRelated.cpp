@@ -3,7 +3,7 @@
 #include <iostream>
 
 #define debug1
-//#define debug2
+#define debug2
 
 void System::fillTest()
 {
@@ -107,7 +107,7 @@ vector<External*> System::possibleExternal(TAMInterval *pTAMInterval)
 		if(pExt->checkDone())
 			continue;
 		// check if all precedence done	
-		if(!pExt->checkPreDone())
+		if(!pExt->checkPreDone(pTAMInterval))
 			continue;
 		// check power will not exceed limit	
 		if(!TAMStat.checkPower(pTAMInterval, pExt, NULL, tot_power, &done_ext_list, &done_bist_list))
@@ -203,7 +203,7 @@ vector<BIST*> System::possibleBIST(TAMInterval *pTAMInterval)
     if(pBist->checkDone())
       continue;
     // check if all precedence done
-    if(!pBist->checkPreDone())
+    if(!pBist->checkPreDone(pTAMInterval))
       continue;
 		// check resource is useable or not
 		if(pBist->getRes() != "") {

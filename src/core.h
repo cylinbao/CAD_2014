@@ -78,6 +78,7 @@ class System{
 		void printBistList();
 		void printTestTime(FILE *pFile);
 		void printResult(char *str);
+		void printPrecedence();
 
 		vector<External*> possibleExternal(TAMInterval *pTAMInterval);
 		vector<BIST*> possibleBIST(TAMInterval *pTAMInterval);
@@ -102,7 +103,7 @@ class System{
 
 class Resource{
 	public:
-		Resource(){name == ""; usable = true; time=0;};
+		Resource(){name = ""; usable = true; time=0;};
 
 		void setName(string name){this->name = name;};
 		void setTure(){usable = true;};
@@ -178,7 +179,7 @@ class Test{
 		vector< pair<int, int> >* getExecTime(){return &execTime;};
 
 		bool checkDone(){return done;};
-		bool checkPreDone();
+		bool checkPreDone(TAMInterval *pTAMInterval);
 
 		void setDone(){done = true;};
 	private: 
