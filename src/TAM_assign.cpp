@@ -1,7 +1,8 @@
 #include "TAM_assign.h"
 
-void coreAssign(Core* core, System& sys, Complement& complement)
+int coreAssign(Core* core, System& sys, Complement& complement)
 {
+	int tmp_random = 0;
 	map<int, map<int, Interval*> >::iterator it_int_1;
 	map<int, Interval*>::iterator it_int_2;
 	while(core != NULL && core->getDone() == false){
@@ -32,11 +33,14 @@ void coreAssign(Core* core, System& sys, Complement& complement)
 				if(!find){
 					if(!randomAssign(core, sys, complement, ext_length))
 						fixedAssign(core, sys, complement, ext_length);
+					else 
+						tmp_random++;
 				}
 			}
 			core = core->getSameExtLength();
 		}
 	}
+	return tmp_random;
 }
 
 bool noMatchedAssign(Core* core, map<int, map<int, Interval*> >::iterator it_int_1, map<int, Interval*>::iterator it_int_2, System& sys, Complement& complement, int& ext_length)
@@ -44,7 +48,7 @@ bool noMatchedAssign(Core* core, map<int, map<int, Interval*> >::iterator it_int
 	bool fit_avg = true;
 	if(it_int_1 != complement.list.end()){
 		for(int i = it_int_2->second->begin; i < it_int_2->second->begin + core->getCoreTW(); i++){
-			if(ext_length + sys.TAM[i] > sys.getTAMAvg()){
+			if(ext_length + sys.TAM[i] > sys.getTAMAvg() * 1.02){
 				fit_avg = false;
 				break;
 			}
@@ -108,7 +112,7 @@ bool matchedAssign(Core* core, map<int, map<int, Interval*> >::iterator it_int_1
 {
 	bool fit_avg = true;
 	for(int i = it_int_2->second->begin; i < it_int_2->second->begin + core->getCoreTW(); i++){
-		if(ext_length + sys.TAM[i] > sys.getTAMAvg()){
+		if(ext_length + sys.TAM[i] > sys.getTAMAvg() * 1.02){
 			fit_avg = false;
 			break;
 		}
@@ -230,7 +234,7 @@ bool randomAssign(Core* core, System& sys, Complement& complement, int& ext_leng
 			}
 		}
 
-		int i = 0, begin = -1, end = -1;
+		int i = 0, tmp_begin = -1, tmp_end = -1, begin = -1, end = -1, tmp_width = -1;
 		map<int, int> tmp_range;
 		map<int, int>::iterator tmp_it, tmp_it_2;
 		map<int, map<int, Interval*> >::iterator it_int_1;
@@ -240,7 +244,6 @@ bool randomAssign(Core* core, System& sys, Complement& complement, int& ext_leng
 		it = split.begin();
 		while(i != core->getCoreTW()){
 			for(int j = 0; j < (int)it->second.size(); j++){
-				sys.modTAM(it->second[j], it->second[j], ext_length);
 				TAM.push(it->second[j]);
 				i++;
 				if(i == core->getCoreTW())
@@ -253,25 +256,40 @@ bool randomAssign(Core* core, System& sys, Complement& complement, int& ext_leng
 
 		cout<<"Random Assign"<<endl;
 		while(!TAM.empty()){
-				if(begin == -1){
-					begin = TAM.top();
-					end = TAM.top();
+				cout<<TAM.top()<<endl;
+				if(tmp_begin == -1){
+					tmp_begin = TAM.top();
+					tmp_end = TAM.top();
 				}
-				else if(end != TAM.top() - 1){
-					core->setTAMRange(begin, end);
-					cout<<begin<<", "<<end<<endl;
-					cout<<"Width: "<<end - begin + 1<<endl;
-					begin = TAM.top();
+				else if(tmp_end != TAM.top() - 1){
+					if(tmp_width < tmp_end - tmp_begin + 1){
+						begin = tmp_begin;
+						end = tmp_end;
+						tmp_width = end - begin + 1;
+					}
+					tmp_begin = TAM.top();
 				}
 				if(TAM.size() == 1){
-					end = TAM.top();
-					core->setTAMRange(begin, end);
-					cout<<begin<<", "<<end<<endl;
-					cout<<"Width: "<<end - begin + 1<<endl;
+					tmp_end = TAM.top();
+					if(tmp_width < tmp_end - tmp_begin + 1){
+						begin = tmp_begin;
+						end = tmp_end;
+						tmp_width = end - begin + 1;
+					}
 				}
-				end = TAM.top();
+				tmp_end = TAM.top();
 				TAM.pop();
 		}
+		cout<<begin<<endl;
+		cout<<end<<endl;
+		if(end + (core->getCoreTW() - tmp_width) < sys.getSysTW())
+			end = end + core->getCoreTW() - tmp_width;
+		else if(begin - (core->getCoreTW() - tmp_width) >= 0)
+			begin = begin - (core->getCoreTW() - tmp_width);
+		core->setTAMRange(begin, end);
+		sys.modTAM(begin, end, ext_length);
+		cout<<"Begin: "<<begin<<endl;
+		cout<<"End: "<<end<<endl;
 		cout<<endl;
 		cout<<"Total Width: "<<core->getCoreTW()<<endl;
 		cout<<"Length Added: "<<ext_length<<endl;

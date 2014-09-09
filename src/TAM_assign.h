@@ -24,7 +24,7 @@ class Complement{
 };
 
 
-void coreAssign(Core* core, System& sys, Complement& complement);
+int coreAssign(Core* core, System& sys, Complement& complement);
 bool noMatchedAssign(Core* core, map<int, map<int, Interval*> >::iterator it_int_1, map<int, Interval*>::iterator it_int_2, System& sys, Complement& complement, int& ext_length);
 bool matchedAssign(Core* core, map<int, map<int, Interval*> >::iterator it_int_1, map<int, Interval*>::iterator it_int_2, System& sys, Complement& complement, int& ext_length);
 bool bottomAssign(Core* core, System& sys, Complement& complement, int& ext_length);

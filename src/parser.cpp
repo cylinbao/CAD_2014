@@ -195,7 +195,7 @@ struct cmp
 					
 void TAMwidthAssign()
 {
-	int i;
+	int i, random = 0;
 	sys.initTAM();
 	map<int, map<int, Core*> > set_core_list; // 1. TAM width 2. Length
 	map<int, map<int, Core*> >::iterator it_1;
@@ -228,13 +228,13 @@ void TAMwidthAssign()
 	}
 
 	cout<<"Previous Work Begin: "<<endl;
-	while(!pre_arrange.empty()){
-		if(pre_arrange.top()->getExtLength() >= sys.getTAMAvg() / 5){
+	/*while(!pre_arrange.empty()){
+		if(pre_arrange.top()->getExtLength() >= sys.getTAMAvg() / 2){
 			Core* core = pre_arrange.top();
-			coreAssign(core, sys, complement);
+			random+=coreAssign(core, sys, complement);
 		}
 		pre_arrange.pop();
-	}
+	}*/
 	cout<<"Previous Work End"<<endl;
 
 	for(i = 0; i < sys.getSysTW(); i++)
@@ -246,7 +246,7 @@ void TAMwidthAssign()
 		it_2 = it_1->second.end();
 		for(it_2--;; it_2--){
 			Core* core = it_2->second;
-			coreAssign(core, sys, complement);
+			random+=coreAssign(core, sys, complement);
 			if(it_2 == it_1->second.begin())
 				break;
 		}
@@ -260,6 +260,8 @@ void TAMwidthAssign()
 		tot_1 += sys.TAM[i];
 		cout<<"TAM["<<i<<"]: "<<sys.TAM[i]<<endl;
 	}
-	cout<<"TAM_1: "<<tot_1/sys.getSysTW()<<endl;
-	cout<<"TAM avg: "<<sys.getTAMAvg()<<endl;
+	cout<<"Random Count: "<<random<<endl;
+	cout<<"Core Count: "<<sys.core.size()<<endl;
+	cout<<"TAM avg: "<<tot_1/sys.getSysTW()<<endl;
+	cout<<"TAM avg(correct): "<<sys.getTAMAvg()<<endl;
 }
