@@ -42,6 +42,8 @@ class TAMContainer {
     void printTAM();
 		void insertInterval(External* pExt);
 		void deleteTop();
+		void computeTotPower();
+		vector<TAMInterval*> getTopIntvWithSameTime();
 
     priority_queue<TAMInterval*, vector<TAMInterval*>, cmp_TAM> pqTAM;
 		int totPower;
@@ -57,12 +59,15 @@ class System{
 		void setTAMAvg(int avg){this->avg = avg;};
 		void initTAM(){TAM = new int[tot_TAM_width];for(int i = 0; i < tot_TAM_width; i++)TAM[i] = 0;};
 		void modTAM(int begin, int end, int val){for(int i = begin; i <= end; i++)TAM[i]+=val;};
+		void printTAMAssignment();
 
 		int getTAMAvg(){return avg;};
 		int getSysPower(){return tot_power;};
 		int getSysTW(){return tot_TAM_width;};
 
 		void fillTest();
+		void printExtList();
+
 		vector<External*> possibleExternal(TAMInterval *pTAMInterval);
 		vector<BIST*> possibleBIST();
 
@@ -114,12 +119,15 @@ class Core{
 		int getCoreTW(){return TAM_width;};
 		int getNumTest(){return num_test;};
 		int getExtLength(){return ext_length;};
-		vector<pair<int, int> > getTAM_range() {return TAM_range;};
 		int getTAMBegin(){return TAM_range[0].first;};
 		int getTAMEnd(){return TAM_range[0].second;};
+		vector<pair<int, int> > getTAM_range() {return TAM_range;};
 		Core* getSameExtLength(){return same_ext_length;};
 		bool getDone(){return done;};
+
 		int initTAM(){return TAM_range.size();};
+
+		void printTAM_range();
 
 		map<string, External*> ext_list;
 		map<string, BIST*> bist_list;
@@ -149,10 +157,13 @@ class Test{
 		string getName(){return name;};
 		int getPower(){return power;};
 		int getLength(){return length;};
-		bool checkDone(){return done;};
-		bool checkPreDone();
 		vector<Test*>* getPre(){return &pre;};
 		vector< pair<int, int> >* getExecTime(){return &execTime;};
+
+		bool checkDone(){return done;};
+		bool checkPreDone();
+
+		void setDone(){done = true;};
 	private: 
 		Core* core;
 		string name;
@@ -171,6 +182,8 @@ class External: public Test{
 		void setPartition(int partition){this->partition = partition;};
 
 		int getPartition(){return partition;};
+
+		void printInfo();
 	private: 
 		int partition;
 		

@@ -103,6 +103,7 @@ void readInputFile(char* fileName)
 					ss >> name;
 
 					External* new_ext = new External;
+					new_ext->setName(name);
 					sys.tot_list[name] = new_ext;
 					sys.ext_list[name] = new_ext;
 					new_core->ext_list[name] = new_ext;
@@ -133,6 +134,7 @@ void readInputFile(char* fileName)
 					ss >> name;
 
 					BIST* new_bist = new BIST;
+					new_bist->setName(name);
 					sys.tot_list[name] = new_bist;
 					sys.bist_list[name] = new_bist;
 					new_core->bist_list[name] = new_bist;
