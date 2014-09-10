@@ -41,6 +41,20 @@ void TAMContainer::insertInterval(External *pExt)
 			if((TAM_range[i].first >= pTAMInterval->TAMBegin) &&
 				 (TAM_range[i].second <= pTAMInterval->TAMEnd))
 			{
+				int addLength, nextEndTime;
+
+				if(pExt->getPartition() > 1) {
+					if(!pqTAM.empty()) {
+						nextEndTime = pqTAM.top()->timeEnd;
+						if((pTAMInterval->timeEnd + pExt->getLength()) > nextEndTime) {
+							if((pTAMInterval->TAMEnd + 1 == pqTAM.top()->TAMBegin) || 
+								(pTAMInterval->TAMBegin - 1 == pqTAM.top()->TAMBegin))
+							{
+								// conform all conditions, do the partition
+							}
+						}
+					}
+				}
 				// conform the conditions, insert it
 				newTAMInterval = new TAMInterval(TAM_range[i].first, TAM_range[i].second, 
 																				 pTAMInterval->timeEnd, (pTAMInterval->timeEnd)
