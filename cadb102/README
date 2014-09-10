@@ -1,0 +1,28 @@
+README of group: cadb102
+
+SOURCE CODE
+	Where:
+		Inside directory "source"
+
+	How to compile:
+		Use command "make", it will generate ouput binary "cadb102" under the same
+		directory.
+
+BINARY
+	Where:
+		Inside directory "execute"
+
+	Name:
+		cadb102
+
+	How to use:
+		Go to the directory with the binary, and type command
+		"./cadb102 bench_x.info"
+		(x can be number: 1 ~ 8 and 10 ~ 12, or other input files)
+
+	Output:
+		In the end, it will generate output file: bench_x.schedulinga, (x is 
+		respond to the number x of the input file name), which is our result.
+
+		The binary will print some infomation during the process, you can just 
+		ignore it.
