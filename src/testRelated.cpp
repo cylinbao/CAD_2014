@@ -32,7 +32,7 @@ void System::fillTest()
 			// for external
 			if(!vecExternal.empty()) {
 				//pExt = vecExternal[0];// Only get the first one in this version
-				pExt = widthFirstExt(&vecExternal);
+				pExt = filterExt(&vecExternal);
 				wait_ext_list.erase( pExt->getName());// delete it from wait list
 
 				intvTime = pTAMInterval->timeEnd;
@@ -66,6 +66,7 @@ void System::fillTest()
 			#endif
 			if(!vecBist.empty()) {
 				pBist = vecBist[0];
+				//pBist = filterBist(&vecBist);
 				wait_bist_list.erase( pBist->getName());// delete it from wait list
 
 				intvTime = pTAMInterval->timeEnd;
@@ -260,9 +261,21 @@ vector<BIST*> System::possibleBIST(TAMInterval *pTAMInterval)
   return vecBist;
 }
 
-External* System::widthFirstExt(vector<External*>* vecExternal)
+External* System::filterExt(vector<External*>* vecExternal)
+{
+	vector<External*> recVec;
+
+	recVec = widthFirstExt(vecExternal);
+	recVec = lengthFirstExt(&recVec);
+	//recVec = powerFirstExt(&recVec);
+
+	return recVec[0];
+}
+
+vector<External*> System::widthFirstExt(vector<External*>* vecExternal)
 {
   int i, maxWidth;
+	vector<External*> outVec;
 
   maxWidth = (*vecExternal)[0]->getCore()->getCoreTW();
 
@@ -273,6 +286,98 @@ External* System::widthFirstExt(vector<External*>* vecExternal)
 
   for(i = 0; i < (int)vecExternal->size(); i++){
     if((*vecExternal)[i]->getCore()->getCoreTW() == maxWidth)
-      return (*vecExternal)[i];
+       outVec.push_back((*vecExternal)[i]);
   }
+
+	return outVec;
+}
+
+vector<External*> System::lengthFirstExt(vector<External*>* vecExternal)
+{
+  int i, maxLength;
+	vector<External*> outVec;
+
+  maxLength = (*vecExternal)[0]->getLength();
+
+  for(i = 0; i < (int)vecExternal->size(); i++){
+    if((*vecExternal)[i]->getLength() > maxLength)
+      maxLength = (*vecExternal)[i]->getLength();
+  }
+
+  for(i = 0; i < (int)vecExternal->size(); i++){
+    if((*vecExternal)[i]->getLength() == maxLength)
+       outVec.push_back((*vecExternal)[i]);
+  }
+
+	return outVec;
+}
+
+vector<External*> System::powerFirstExt(vector<External*>* vecExternal)
+{
+	int i, minPower;
+	vector<External*> outVec;
+
+	minPower = (*vecExternal)[0]->getPower();
+
+	for(i = 0; i < (int)vecExternal->size(); i++) {
+		if((*vecExternal)[i]->getPower() > minPower)
+			minPower = (*vecExternal)[i]->getPower();
+	}
+
+	for(i = 0; i < (int)vecExternal->size(); i++) {
+		if((*vecExternal)[i]->getPower() == minPower)
+			outVec.push_back((*vecExternal)[i]);
+	}
+
+	return outVec;
+}
+
+BIST* System::filterBist(vector<BIST*>* vecBist)
+{
+	vector<BIST*> recVec;
+
+	//recVec = lengthFirstBist(vecBist);
+	//recVec = powerFirstBist(vecBist);
+
+	return recVec[0];
+}
+
+vector<BIST*> System::lengthFirstBist(vector<BIST*>* vecBist)
+{
+  int i, maxLength;
+	vector<BIST*> outVec;
+
+  maxLength = (*vecBist)[0]->getLength();
+
+  for(i = 0; i < (int)vecBist->size(); i++){
+    if((*vecBist)[i]->getLength() < maxLength)
+      maxLength = (*vecBist)[i]->getLength();
+  }
+
+  for(i = 0; i < (int)vecBist->size(); i++){
+    if((*vecBist)[i]->getLength() == maxLength)
+       outVec.push_back((*vecBist)[i]);
+  }
+
+	return outVec;
+}
+
+vector<BIST*> System::powerFirstBist(vector<BIST*>* vecBist)
+{
+	int i, minPower;
+	vector<BIST*> outVec;
+
+	minPower = (*vecBist)[0]->getPower();
+
+	for(i = 0; i < (int)vecBist->size(); i++) {
+		if((*vecBist)[i]->getPower() < minPower)
+			minPower = (*vecBist)[i]->getPower();
+	}
+
+	for(i = 0; i < (int)vecBist->size(); i++) {
+		if((*vecBist)[i]->getPower() == minPower)
+			outVec.push_back((*vecBist)[i]);
+	}
+
+	return outVec;
 }

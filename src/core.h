@@ -82,7 +82,13 @@ class System{
 		void printResult(char *str);
 		void printPrecedence();
 
-		External* widthFirstExt(vector<External*>* vecExternal);
+		External* filterExt(vector<External*>* vecExternal);
+		vector<External*> widthFirstExt(vector<External*>* vecExternal);
+		vector<External*> lengthFirstExt(vector<External*>* vecExternal);
+		vector<External*> powerFirstExt(vector<External*>* vecExternal);
+		BIST* filterBist(vector<BIST*>* vecBist);
+		vector<BIST*> lengthFirstBist(vector<BIST*>* vecBist);
+		vector<BIST*> powerFirstBist(vector<BIST*>* vecBist);
 
 		vector<External*> possibleExternal(TAMInterval *pTAMInterval);
 		vector<BIST*> possibleBIST(TAMInterval *pTAMInterval);
