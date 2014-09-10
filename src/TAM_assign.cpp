@@ -1,6 +1,6 @@
 #include "TAM_assign.h"
 
-int coreAssign(Core* core, System& sys, Complement& complement)
+int coreAssign(Core* core, System& sys, Complement& complement, float arg)
 {
 	int tmp_random = 0;
 	map<int, map<int, Interval*> >::iterator it_int_1;
@@ -14,13 +14,13 @@ int coreAssign(Core* core, System& sys, Complement& complement)
 					for(it_int_2 = it_int_1->second.begin(); it_int_2 != it_int_1->second.end(); it_int_2++){
 						if(it_int_1->first >= core->getCoreTW() && (core->initTAM() == 0 || it_int_1->second.begin()->second->begin == core->getTAMBegin())){
 							if(it_int_1 != complement.list.end() && it_int_1->first == core->getCoreTW()){
-								if(matchedAssign(core, it_int_1, it_int_2, sys, complement, ext_length)){
+								if(matchedAssign(core, it_int_1, it_int_2, sys, complement, ext_length, arg)){
 									find = true;
 									break;
 								}
 							}
 							else{
-								if(noMatchedAssign(core, it_int_1, it_int_2, sys, complement, ext_length)){
+								if(noMatchedAssign(core, it_int_1, it_int_2, sys, complement, ext_length, arg)){
 									find = true;
 									break;
 								}
@@ -43,12 +43,12 @@ int coreAssign(Core* core, System& sys, Complement& complement)
 	return tmp_random;
 }
 
-bool noMatchedAssign(Core* core, map<int, map<int, Interval*> >::iterator it_int_1, map<int, Interval*>::iterator it_int_2, System& sys, Complement& complement, int& ext_length)
+bool noMatchedAssign(Core* core, map<int, map<int, Interval*> >::iterator it_int_1, map<int, Interval*>::iterator it_int_2, System& sys, Complement& complement, int& ext_length, float arg)
 {
 	bool fit_avg = true;
 	if(it_int_1 != complement.list.end()){
 		for(int i = it_int_2->second->begin; i < it_int_2->second->begin + core->getCoreTW(); i++){
-			if(ext_length + sys.TAM[i] > sys.getTAMAvg() * 1.02){
+			if(ext_length + sys.TAM[i] > sys.getTAMAvg() * arg){ // 1.01 ~ 1.1
 				fit_avg = false;
 				break;
 			}
@@ -108,11 +108,11 @@ bool noMatchedAssign(Core* core, map<int, map<int, Interval*> >::iterator it_int
 	return false;
 }
 
-bool matchedAssign(Core* core, map<int, map<int, Interval*> >::iterator it_int_1, map<int, Interval*>::iterator it_int_2, System& sys, Complement& complement, int& ext_length)
+bool matchedAssign(Core* core, map<int, map<int, Interval*> >::iterator it_int_1, map<int, Interval*>::iterator it_int_2, System& sys, Complement& complement, int& ext_length, float arg)
 {
 	bool fit_avg = true;
 	for(int i = it_int_2->second->begin; i < it_int_2->second->begin + core->getCoreTW(); i++){
-		if(ext_length + sys.TAM[i] > sys.getTAMAvg() * 1.02){
+		if(ext_length + sys.TAM[i] > sys.getTAMAvg() * arg){ // 1.01 ~ 1.1
 			fit_avg = false;
 			break;
 		}

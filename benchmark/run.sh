@@ -26,11 +26,11 @@ mv bench_7.scheduling output
 ./cadb102 bench_8.info
 mv bench_8.scheduling output
 
-./cadb102 bench_10.info
-mv bench_10.scheduling output
+#./cadb102 bench_10.info
+#mv bench_10.scheduling output
 
-./cadb102 bench_11.info
-mv bench_11.scheduling output
+#./cadb102 bench_11.info
+#mv bench_11.scheduling output
 
-./cadb102 bench_12.info
-mv bench_12.scheduling output
+#./cadb102 bench_12.info
+#mv bench_12.scheduling output

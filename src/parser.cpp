@@ -5,11 +5,11 @@
 
 using namespace std;
 
-extern System sys;
+//extern System *sys;
 vector<vector<string> > pre;
 int avg = 0;
 
-void readInputFile(char* fileName)
+void readInputFile(char* fileName, System *sys)
 {
 	ifstream ifs(fileName);
 	string line, catagory, type, name;
@@ -34,13 +34,13 @@ void readInputFile(char* fileName)
 				ss >> type;
 				if(type == "TAM_width"){
 					ss >> data;
-					sys.setSysTW(data);
+					sys->setSysTW(data);
 					ss.clear();
 					continue;
 				}
 				else if(type == "Power"){
 					ss >> data;
-					sys.setSysPower(data);
+					sys->setSysPower(data);
 					ss.clear();
 					continue;
 				}
@@ -63,7 +63,7 @@ void readInputFile(char* fileName)
 					while(!ss.eof()){
 						ss >> name;
 						Resource* new_res = new Resource;
-						sys.res_list[name] = new_res;
+						sys->res_list[name] = new_res;
 						new_res->setName(name);
 					}
 					ss.clear();
@@ -85,8 +85,8 @@ void readInputFile(char* fileName)
 			ss >> name;
 
 			Core* new_core = new Core;
-			sys.core.push_back(new_core);
-			new_core->setSystem(&sys);
+			sys->core.push_back(new_core);
+			new_core->setSystem(sys);
 			new_core->setName(name);
 
 			ss.clear();
@@ -105,8 +105,8 @@ void readInputFile(char* fileName)
 
 					External* new_ext = new External;
 					new_ext->setName(name);
-					sys.tot_list[name] = new_ext;
-					sys.ext_list[name] = new_ext;
+					sys->tot_list[name] = new_ext;
+					sys->ext_list[name] = new_ext;
 					new_core->ext_list[name] = new_ext;
 					new_ext->setCore(new_core);
 
@@ -136,8 +136,8 @@ void readInputFile(char* fileName)
 
 					BIST* new_bist = new BIST;
 					new_bist->setName(name);
-					sys.tot_list[name] = new_bist;
-					sys.bist_list[name] = new_bist;
+					sys->tot_list[name] = new_bist;
+					sys->bist_list[name] = new_bist;
 					new_core->bist_list[name] = new_bist;
 					new_bist->setCore(new_core);
 
@@ -173,15 +173,16 @@ void readInputFile(char* fileName)
 			}
 		}
 	}
-	sys.setTAMAvg(TAM_sum/sys.getSysTW());
+	sys->setTAMAvg(TAM_sum/sys->getSysTW());
+	ifs.close();
 }
 
-void setPrecedence()
+void setPrecedence(System *sys)
 {	
 	int i , j;
 	for(i = 0; i < (int)pre.size(); i++){
 		for(j = 0; j < (int)pre[i].size() - 1; j++)
-			sys.tot_list[pre[i][j + 1]]->addPre(sys.tot_list[pre[i][j]]);
+			sys->tot_list[pre[i][j + 1]]->addPre(sys->tot_list[pre[i][j]]);
 	}
 }
 
@@ -193,10 +194,10 @@ struct cmp
         }
 };
 					
-void TAMwidthAssign()
+void TAMwidthAssign(int arg1, float arg2, System *sys)
 {
 	int i, random = 0;
-	sys.initTAM();
+	sys->initTAM();
 	map<int, map<int, Core*> > set_core_list; // 1. TAM width 2. Length
 	map<int, map<int, Core*> >::iterator it_1;
 	map<int, Core*>::iterator it_2;
@@ -204,41 +205,41 @@ void TAMwidthAssign()
 	priority_queue<Core*, vector<Core*>, cmp> pre_arrange;
 	Complement complement;
 
-	for(i = 0 ; i < (int)sys.core.size(); i++){
-		if(sys.core[i]->getCoreTW() != 0){
-			if(set_core_list.find(sys.core[i]->getCoreTW()) == set_core_list.end()){
+	for(i = 0 ; i < (int)sys->core.size(); i++){
+		if(sys->core[i]->getCoreTW() != 0){
+			if(set_core_list.find(sys->core[i]->getCoreTW()) == set_core_list.end()){
 				map<int, Core*> tmp;
-				cout<<sys.core[i]->getExtLength()<<endl;
-				tmp[sys.core[i]->getExtLength()] = sys.core[i];
-				set_core_list[sys.core[i]->getCoreTW()] = tmp;
+				cout<<sys->core[i]->getExtLength()<<endl;
+				tmp[sys->core[i]->getExtLength()] = sys->core[i];
+				set_core_list[sys->core[i]->getCoreTW()] = tmp;
 			}
 			else{
-				if(set_core_list[sys.core[i]->getCoreTW()].find(sys.core[i]->getExtLength()) == set_core_list[sys.core[i]->getCoreTW()].end())
-					set_core_list[sys.core[i]->getCoreTW()].insert(pair<int, Core*>(sys.core[i]->getExtLength(), sys.core[i]));
+				if(set_core_list[sys->core[i]->getCoreTW()].find(sys->core[i]->getExtLength()) == set_core_list[sys->core[i]->getCoreTW()].end())
+					set_core_list[sys->core[i]->getCoreTW()].insert(pair<int, Core*>(sys->core[i]->getExtLength(), sys->core[i]));
 				else{
-					Core* tmp = set_core_list[sys.core[i]->getCoreTW()].find(sys.core[i]->getExtLength())->second;
+					Core* tmp = set_core_list[sys->core[i]->getCoreTW()].find(sys->core[i]->getExtLength())->second;
 					while(tmp->getSameExtLength() != NULL)
 						tmp = tmp->getSameExtLength();
-					tmp->setSameExtLength(sys.core[i]);
+					tmp->setSameExtLength(sys->core[i]);
 				}
-				cout<<sys.core[i]->getExtLength()<<endl;
+				cout<<sys->core[i]->getExtLength()<<endl;
 			}
-			pre_arrange.push(sys.core[i]);
+			pre_arrange.push(sys->core[i]);
 		}
 	}
 
 	cout<<"Previous Work Begin: "<<endl;
-	/*while(!pre_arrange.empty()){
-		if(pre_arrange.top()->getExtLength() >= sys.getTAMAvg() / 2){
+	while(!pre_arrange.empty()){
+		if(pre_arrange.top()->getExtLength() >= sys->getTAMAvg() / arg1){ // 1 ~ 10
 			Core* core = pre_arrange.top();
-			random+=coreAssign(core, sys, complement);
+			random+=coreAssign(core, *sys, complement, arg2);
 		}
 		pre_arrange.pop();
-	}*/
+	}
 	cout<<"Previous Work End"<<endl;
 
-	for(i = 0; i < sys.getSysTW(); i++)
-		cout<<"TAM["<<i<<"]: "<<sys.TAM[i]<<endl;
+	for(i = 0; i < sys->getSysTW(); i++)
+		cout<<"TAM["<<i<<"]: "<<sys->TAM[i]<<endl;
 	cout<<endl;
 
 	it_1 = set_core_list.end();
@@ -246,7 +247,7 @@ void TAMwidthAssign()
 		it_2 = it_1->second.end();
 		for(it_2--;; it_2--){
 			Core* core = it_2->second;
-			random+=coreAssign(core, sys, complement);
+			random+=coreAssign(core, *sys, complement, arg2);
 			if(it_2 == it_1->second.begin())
 				break;
 		}
@@ -256,12 +257,12 @@ void TAMwidthAssign()
 	}
 
 	int tot_1 = 0;
-	for(i = 0; i < sys.getSysTW(); i++){
-		tot_1 += sys.TAM[i];
-		cout<<"TAM["<<i<<"]: "<<sys.TAM[i]<<endl;
+	for(i = 0; i < sys->getSysTW(); i++){
+		tot_1 += sys->TAM[i];
+		cout<<"TAM["<<i<<"]: "<<sys->TAM[i]<<endl;
 	}
 	cout<<"Random Count: "<<random<<endl;
-	cout<<"Core Count: "<<sys.core.size()<<endl;
-	cout<<"TAM avg: "<<tot_1/sys.getSysTW()<<endl;
-	cout<<"TAM avg(correct): "<<sys.getTAMAvg()<<endl;
+	cout<<"Core Count: "<<sys->core.size()<<endl;
+	cout<<"TAM avg: "<<tot_1/sys->getSysTW()<<endl;
+	cout<<"TAM avg(correct): "<<sys->getTAMAvg()<<endl;
 }

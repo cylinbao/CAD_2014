@@ -4,13 +4,14 @@
 
 void System::printResult(char *str)
 {
-	char *outName;
+	char *outName, temp[20];
 	FILE *pFile;
 
 	#ifdef debug3
 	printf("original = %s\n", str);
 	#endif
-	outName = strtok(str,".");
+	strcpy(temp, str);
+	outName = strtok(temp,".");
 	strcat(outName, ".scheduling");
 	#ifdef debug3
 	printf("outName = %s\n", outName);
@@ -22,6 +23,8 @@ void System::printResult(char *str)
 	printTAMAssignment(pFile);
 	printTest(pFile);
 	fprintf(pFile, "\nend");
+
+	fclose(pFile);
 }
 
 void System::printTestTime(FILE *pFile)
