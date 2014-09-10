@@ -31,7 +31,8 @@ void System::fillTest()
 			#endif
 			// for external
 			if(!vecExternal.empty()) {
-				pExt = vecExternal[0];// Only get the first one in this version
+				//pExt = vecExternal[0];// Only get the first one in this version
+				pExt = widthFirstExt(&vecExternal);
 				wait_ext_list.erase( pExt->getName());// delete it from wait list
 
 				intvTime = pTAMInterval->timeEnd;
@@ -257,4 +258,21 @@ vector<BIST*> System::possibleBIST(TAMInterval *pTAMInterval)
 	}
 
   return vecBist;
+}
+
+External* System::widthFirstExt(vector<External*>* vecExternal)
+{
+  int i, maxWidth;
+
+  maxWidth = (*vecExternal)[0]->getCore()->getCoreTW();
+
+  for(i = 0; i < (int)vecExternal->size(); i++){
+    if((*vecExternal)[i]->getCore()->getCoreTW() > maxWidth)
+      maxWidth = (*vecExternal)[i]->getCore()->getCoreTW();
+  }
+
+  for(i = 0; i < (int)vecExternal->size(); i++){
+    if((*vecExternal)[i]->getCore()->getCoreTW() == maxWidth)
+      return (*vecExternal)[i];
+  }
 }

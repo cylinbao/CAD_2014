@@ -82,6 +82,8 @@ class System{
 		void printResult(char *str);
 		void printPrecedence();
 
+		External* widthFirstExt(vector<External*>* vecExternal);
+
 		vector<External*> possibleExternal(TAMInterval *pTAMInterval);
 		vector<BIST*> possibleBIST(TAMInterval *pTAMInterval);
 
